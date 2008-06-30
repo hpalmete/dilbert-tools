@@ -1,0 +1,75 @@
+#!/usr/bin/php
+<?php
+
+$options	= parseArgumentsBuilder($argv);
+$onWindows	= (strtolower(substr(php_uname('s'), 0, 3)) == "win") ? true : false;
+$windows	= ($options['windows'] || $options['w'] || $onWindows === true) ? true : false;
+$output		= ($options['output']) ? $options['output'] : '.';
+
+#print_r("$windows\n$output\n");
+
+if (!function_exists('file_put_contents')) {
+ function file_put_contents($file, $contents) {
+  if (!$fopen = fopen("$file", 'w')) return false;
+  if (!fwrite($fopen, "$contents")) return false;
+  if (!fclose($fopen)) return false;
+ }
+}
+
+if (!$fetch = file_get_contents("fetch-dilbert.buildsrc")) error("Could not open fetch-dilbert.buildsrc\n");
+if (!$update = file_get_contents("update-dilbert.buildsrc")) error("Could not open update-dilbert.buildsrc\n");
+if (!$fetchStrip = file_get_contents("fetch-strip.buildinc")) error("Could not open fetch-strip.buildinc\n");
+
+$fetch = str_replace("/*BUILD_INCLUDE: fetch-strip.buildinc*/", "$fetchStrip", $fetch);
+$update = str_replace("/*BUILD_INCLUDE: fetch-strip.buildinc*/", "$fetchStrip", $update); 
+
+if ($windows) {
+ file_put_contents("$output/fetch-dilbert.php", "$fetch");
+ file_put_contents("$output/update-dilbert.php", "$update");
+ if (!$onWindows)
+  echo "Now run bamcompile -e:php_gd2.dll on Windows for fetch-dilbert.php or\nupdate-dilbert.php\n";
+ if ($onWindows) {
+  system("bamcompile -e:php_gd2.dll $output/fetch-dilbert.php");
+  system("bamcompile -e:php_gd2.dll $output/update-dilbert.php");
+ }
+}
+else {
+ file_put_contents("$output/fetch-dilbert", "#!/usr/bin/php\n$fetch");
+ file_put_contents("$output/update-dilbert", "#!/usr/bin/php\n$update");
+}
+
+function parseArgumentsBuilder($arguments) {
+ # from http://tinyurl.com/5e2qkp, but modified
+ # parses arguments Unix-style
+ $args = array();
+ foreach ($arguments as $arg) {
+  if (preg_match('#^-{1,2}([a-zA-Z0-9]*)=?(.*)$#', $arg, $matches)) {
+   $key = $matches[1];
+   switch ($matches[2]) {
+    case '':
+     case 'true':
+      $arg = true;
+      break;
+     case 'false':
+      $arg = false;
+      break;
+     default:
+      $arg = $matches[2];
+   }
+   /* make unix like -afd == -a -f -d */
+   if(preg_match("/^-([a-zA-Z0-9]+)/", $matches[0], $match)) {
+    $string = $match[1];
+    for($i=0; strlen($string) > $i; $i++) {
+     $args[$string[$i]] = true;
+    }
+   }
+   else
+    $args[$key] = $arg;
+  }
+  else
+   $args['input'][] = $arg;
+ }
+ return $args;
+}
+
+?>
