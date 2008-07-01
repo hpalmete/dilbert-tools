@@ -1,20 +1,16 @@
 Dilbert Tools by Scott Wallace
-http://www.scott-wallace.net/dilbert-tools
+Revision 11
+http://code.google.com/p/dilbert-tools
 
-Archive Contents:
+Unix Archive Contents:
  fetch-dilbert - *nix script
  update-dilbert - *nix script
+ README.txt - this file
+Windows Archive Contents:
  fetch-dilbert.php - Windows script
  update-dilbert.php - Windows script
  fetch-dilbert.exe - Windows EXE
  update-dilbert.exe - Windows EXE
- fetch-dilbert.buildsrc - common source file (do not run)
- update-dilbert.buildsrc - common source file (do not run)
- fetch-strip.buildinc - common source file (do not run)
- build - generates *nix and Windows scripts; also makes EXEs if run on Windows
- bamcompile.exe - compiles PHP4 scripts into Windows EXEs
- bamcompile_readme.txt - Readme for bamcompile
- php_gd2.dll - PHP4 GD module (for bamcompile)
  README.txt - this file
 
 How do I use them?
@@ -40,7 +36,9 @@ If you're on a Unix-based system, be sure to run chmod +x fetch-dilbert and
 chmod +x update-dilbert before you run them.
 
 Can I modify them?
-Yes.  Just be sure to modify the .buildsrc files if you want to make changes.
+Yes.  First, check out the latest sources from the SVN repository.  See
+<http://code.google.com/p/dilbert-tools/source/checkout> for instructions.
+Then, just be sure to modify the .buildsrc files if you want to make changes.
 fetch-strip.buildinc has the function that fetches and converts the strips.
 When you're done, run php -f build to create the scripts that you actually run.
 If you're on Windows, that command will also create the EXE files.  To make the
