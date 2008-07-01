@@ -1,6 +1,8 @@
 #!/usr/bin/php
 <?php
 
+ini_set("error_reporting", "E_ALL");
+
 $options	= parseArgumentsBuilder($argv);
 $onWindows	= (strtolower(substr(php_uname('s'), 0, 3)) == "win") ? true : false;
 $windows	= ($options['windows'] || $options['w'] || $onWindows === true) ? true : false;
@@ -27,10 +29,10 @@ if ($windows) {
  file_put_contents("$output/fetch-dilbert.php", "$fetch");
  file_put_contents("$output/update-dilbert.php", "$update");
  if (!$onWindows)
-  echo "Now run bamcompile -e:php_gd2.dll on Windows for fetch-dilbert.php or\nupdate-dilbert.php\n";
+  echo "Now run bamcompile -d -e:php_gd2.dll on Windows for fetch-dilbert.php and/or\nupdate-dilbert.php\n";
  if ($onWindows) {
-  system("bamcompile -e:php_gd2.dll $output/fetch-dilbert.php");
-  system("bamcompile -e:php_gd2.dll $output/update-dilbert.php");
+  system("bamcompile -d -e:php_gd2.dll $output/fetch-dilbert.php");
+  system("bamcompile -d -e:php_gd2.dll $output/update-dilbert.php");
  }
 }
 else {

@@ -19,6 +19,8 @@
  *  - Initial public release
  */
 
+ini_set("error_reporting", "E_WARNING");
+
 // The meat of the script
 $script		= (isset($argv[0]) && $argv[0] != "") ? basename($argv[0]) : "update-dilbert";
 $options	= parseArguments($argv);
