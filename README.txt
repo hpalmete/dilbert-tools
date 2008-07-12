@@ -38,13 +38,15 @@ chmod +x update-dilbert before you run them.
 Can I modify them?
 Yes.  First, check out the latest sources from the SVN repository.  See
 <http://code.google.com/p/dilbert-tools/source/checkout> for instructions.
-Then, just be sure to modify the .buildsrc files if you want to make changes.
-fetch-strip.buildinc has the function that fetches and converts the strips.
-When you're done, run php -f build to create the scripts that you actually run.
-If you're on Windows, that command will also create the EXE files.  To make the
-Windows scripts on non-Windows systems, run:
+Then, just be sure to modify the files in the src/ directory if you want to
+make changes.  fetch-strip.inc.php has the function that fetches and converts
+the strips.  When you're done, run php -f build to create the scripts that you
+actually run.  If you're on Windows, that command will also create the EXE
+files.  To make the Windows scripts on non-Windows systems, run:
  $ php -f build -- --windows
 That command will not make the EXEs, though.
+The resulting files will be put in unix/ for Unix/Linux builds, and windows/
+for Windows builds.
 
 DISCLAIMER:
 These scripts are automated scripts that will scrape various pages from

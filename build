@@ -6,7 +6,10 @@ ini_set("error_reporting", "E_WARNING");
 $options	= parseArgumentsBuilder($argv);
 $onWindows	= (strtolower(substr(php_uname('s'), 0, 3)) == "win") ? true : false;
 $windows	= ($options['windows'] || $options['w'] || $onWindows === true) ? true : false;
-$output		= ($options['output']) ? $options['output'] : '.';
+if ($windows)
+ $output	= ($options['output']) ? $options['output'] : 'windows';
+else
+ $output	= ($options['output']) ? $options['output'] : 'unix';
 
 #print_r("$windows\n$output\n");
 
@@ -18,21 +21,21 @@ if (!function_exists('file_put_contents')) {
  }
 }
 
-if (!$fetch = file_get_contents("fetch-dilbert.buildsrc")) error("Could not open fetch-dilbert.buildsrc\n");
-if (!$update = file_get_contents("update-dilbert.buildsrc")) error("Could not open update-dilbert.buildsrc\n");
-if (!$fetchStrip = file_get_contents("fetch-strip.buildinc")) error("Could not open fetch-strip.buildinc\n");
+if (!$fetch = file_get_contents("src/fetch-dilbert.src.php")) error("Could not open src/fetch-dilbert.src.php\n");
+if (!$update = file_get_contents("src/update-dilbert.src.php")) error("Could not open src/update-dilbert.src.php\n");
+if (!$fetchStrip = file_get_contents("src/fetch-strip.inc.php")) error("Could not open src/fetch-strip.inc.php\n");
 
-$fetch = str_replace("/*BUILD_INCLUDE: fetch-strip.buildinc*/", "$fetchStrip", $fetch);
-$update = str_replace("/*BUILD_INCLUDE: fetch-strip.buildinc*/", "$fetchStrip", $update); 
+$fetch = str_replace("/*INCLUDE:src/fetch-strip.inc.php*/", "$fetchStrip", $fetch);
+$update = str_replace("/*INCLUDE:src/fetch-strip.inc.php*/", "$fetchStrip", $update); 
 
 if ($windows) {
  file_put_contents("$output/fetch-dilbert.php", "$fetch");
  file_put_contents("$output/update-dilbert.php", "$update");
  if (!$onWindows)
-  echo "Now run bamcompile -d -e:php_gd2.dll on Windows for fetch-dilbert.php and/or\nupdate-dilbert.php\n";
+  echo "Now run bamcompile\\bamcompile -d -e:bamcompile\\php_gd2.dll on Windows for\n$output\\fetch-dilbert.php and/or $output\\update-dilbert.php\n";
  if ($onWindows) {
-  system("bamcompile -d -e:php_gd2.dll $output/fetch-dilbert.php");
-  system("bamcompile -d -e:php_gd2.dll $output/update-dilbert.php");
+  system("bamcompile\\bamcompile.exe -d -e:bamcompile\\php_gd2.dll $output\\fetch-dilbert.php");
+  system("bamcompile\\bamcompile.exe -d -e:bamcompile\\php_gd2.dll $output\\update-dilbert.php");
  }
 }
 else {
