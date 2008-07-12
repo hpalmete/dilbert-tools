@@ -6,6 +6,10 @@
  * See bottom for more info.
  *
  * Changes:
+ * 2008-07-12:
+ *  - Uses dilbert.com/fast to find the strip URL; less bandwidth used
+ *  - Changes modification time on DL'd strips to match the strip's date to
+ *    help sorting by modification time
  * 2008-06-30:
  *  - Uses PHP functions, rather than wget/other CLI tools, to download/proccess
  *    strips.
@@ -82,20 +86,7 @@ function noStrip() {
  echo "$script --help\n";
  exit(1);
 }
-function fetchStrip($fdate, $foutputPath) {
- if (!$html = file_get_contents("http://www.dilbert.com/strips/comic/$fdate/")) return false;
- $pieces = explode("<div id=\"FeaturedStrip\" class=\"FeaturedStrip\">\r\n\t\t<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" height=\"300\" width=\"660\"><tr><td align=\"center\"><img src=\"", $html);
- $pieces2 = explode(".strip.print.gif", $pieces[1]);
- $url = "http://www.dilbert.com".$pieces2[0].".strip.gif";
- #echo $url; // uncomment for debugging purposes; sometimes they change the layout of the page.  tricky bastards!
- $file = "$foutputPath/".rtrim($fdate).".png";
- $strip = @imagecreatefromgif("$url");
- if (!$strip) return false;
- if (!imagepng($strip, $file)) return false; // saves $strip to $file with compression level 9
- if (!imagedestroy($strip)) return false;
- return true; 
-}
-
+/*INCLUDE:src/fetch-strip.inc.php*/
 function generateYearArray($fyear, $format) {
  $feb = cal_days_in_month(CAL_GREGORIAN, 2, $fyear);
  $daysInYear = ($feb === 29) ? 366 : 365;

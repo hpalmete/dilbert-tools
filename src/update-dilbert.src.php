@@ -5,6 +5,10 @@
  * Requires fetch-dilbert.  See bottom for more info.
  *
  * Changes:
+ * 2008-07-12:
+ *  - Uses dilbert.com/fast to find the strip URL; less bandwidth used
+ *  - fetchStrip() changes modification time on DL'd strips to match the strip's
+ *    date to help sorting by modification time
  * 2008-06-30:
  *  - No configuration needed
  *  - Run update-dilbert --help for NEW instructions
@@ -87,15 +91,6 @@ function updateDilbertCollection($verbose = false) {
   }
   else if ($verbose) echo "done!\n";
  }
- $directoryListArray2 = listDir($currentYearPath);
- $directoryListArray2Clean = array();
- foreach ($directoryListArray2 as $d) {
-  if ($d !== "." && $d !== "..")
-   $directoryListArray2Clean[] = str_replace(".png", '', $d);
- }
- foreach ($directoryListArray2Clean as $d) {
-  touch("$currentYearPath/$d.png", strtotime($d));
- }
  if ($verbose && $numberNeeded > 0 && $numberFailed == 0) {
   echo "You're up to date now!\n"; return true;
  }
@@ -116,7 +111,7 @@ function generateYearToDateArray($format) {
  return $array;
 }
 
-/*BUILD_INCLUDE: fetch-strip.buildinc*/
+/*INCLUDE:src/fetch-strip.inc.php*/
 function parseArguments($arguments) {
  # from http://tinyurl.com/5e2qkp, but modified
  # parses arguments Unix-style

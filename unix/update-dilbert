@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php
 
 /* update-dilbert by Scott Wallace
@@ -5,6 +6,10 @@
  * Requires fetch-dilbert.  See bottom for more info.
  *
  * Changes:
+ * 2008-07-12:
+ *  - Uses dilbert.com/fast to find the strip URL; less bandwidth used
+ *  - fetchStrip() changes modification time on DL'd strips to match the strip's
+ *    date to help sorting by modification time
  * 2008-06-30:
  *  - No configuration needed
  *  - Run update-dilbert --help for NEW instructions
@@ -87,15 +92,6 @@ function updateDilbertCollection($verbose = false) {
   }
   else if ($verbose) echo "done!\n";
  }
- $directoryListArray2 = listDir($currentYearPath);
- $directoryListArray2Clean = array();
- foreach ($directoryListArray2 as $d) {
-  if ($d !== "." && $d !== "..")
-   $directoryListArray2Clean[] = str_replace(".png", '', $d);
- }
- foreach ($directoryListArray2Clean as $d) {
-  touch("$currentYearPath/$d.png", strtotime($d));
- }
  if ($verbose && $numberNeeded > 0 && $numberFailed == 0) {
   echo "You're up to date now!\n"; return true;
  }
@@ -116,17 +112,18 @@ function generateYearToDateArray($format) {
  return $array;
 }
 
-function fetchStrip($fdate, $foutputPath) {
- if (!$html = file_get_contents("http://www.dilbert.com/strips/comic/$fdate/")) return false;
- $pieces = explode("<div id=\"FeaturedStrip\" class=\"FeaturedStrip\">\r\n\t\t<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" height=\"300\" width=\"660\"><tr><td align=\"center\"><img src=\"", $html);
+function fetchStrip($theDate, $foutputPath) {
+ $fdate = trim($theDate);
+ if (!$html = file_get_contents("http://www.dilbert.com/fast/$fdate/")) return false;
+ $pieces = explode("<img src=\"/dyn/str_strip/0", $html);
  $pieces2 = explode(".strip.print.gif", $pieces[1]);
- $url = "http://www.dilbert.com".$pieces2[0].".strip.gif";
- #echo $url; // uncomment for debugging purposes; sometimes they change the layout of the page.  tricky bastards!
- $file = "$foutputPath/".rtrim($fdate).".png";
+ $url = "http://www.dilbert.com/dyn/str_strip/0".$pieces2[0].".strip.gif";
+ $file = "$foutputPath/$fdate.png";
  $strip = @imagecreatefromgif("$url");
  if (!$strip) return false;
  if (!imagepng($strip, $file)) return false; // saves $strip to $file with compression level 9
  if (!imagedestroy($strip)) return false;
+ touch($file, strtotime($fdate)); // changes modtime on $file to the strip's date to help sorting by modtime (ignored on Winblows)
  return true; 
 }
 
