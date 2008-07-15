@@ -1,9 +1,9 @@
 Dilbert Tools by Scott Wallace
-Version r21
+Version r25
 http://code.google.com/p/dilbert-tools
 Changelog
 
-* 2008-07-15 (r21)
+* 2008-07-15 (r25)
    o Rewritten in Python
    o Requires Python 2.5 and Python Imaging Library (PIL)
    o Specify output path for fetch- with --output=PATH option

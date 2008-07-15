@@ -1,5 +1,5 @@
 Dilbert Tools by Scott Wallace
-Version r21
+Version r25
 http://code.google.com/p/dilbert-tools
 Readme File
 
