@@ -1,0 +1,35 @@
+Dilbert Tools by Scott Wallace
+Version r21
+http://code.google.com/p/dilbert-tools
+Changelog
+
+* 2008-07-15 (r21)
+   o Rewritten in Python
+   o Requires Python 2.5 and Python Imaging Library (PIL)
+   o Specify output path for fetch- with --output=PATH option
+   o --date, --year, --help, and --output have short options:  -d, -y, -h, and
+     -o respectively in fetch
+   o --file has been removed from fetch 
+   o Specify collection path for update with --path=PATH option
+   o --verbose, --help, and --path have short options:  -v, -h, and -p
+     respectively in update
+   o --help's output is very short now in both scripts
+* 2008-07-12 (r20)
+   o Uses dilbert.com/fast to find the strip URL; less bandwidth used
+   o fetchStrip() changes modification time on DL'd strips to match the strip's
+     date to help sorting by modification time
+   o Since fetchStrip() touches strips now, and the update script used to do
+     that, remove that from the update script 
+* 2008-07-01 (r11)
+   o Force error reporting to E_WARNING to prevent unnecessary messages. 
+* 2008-06-30
+   o No configuration needed
+   o Windows exe that does not require PHP to be installed
+   o Requires GD module
+   o Can be run without fetch-dilbert
+   o Runs on Windows 
+* 2008-06-27
+   o Added error handling
+   o Other minor changes 
+* 2008-06-24
+   o Initial public release 
