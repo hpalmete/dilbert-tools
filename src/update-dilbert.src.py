@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Dilbert Tools (update-dilbert)
-# Copyright (C) 2008 Scott Wallace
+# Copyright (C) 2008-2009 Scott Wallace
 # http://code.google.com/p/dilbert-tools/
 #
 # This program is free software; you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 # for convenience only.  It is not covered under the above license statement.
 # See its source files (e.g. pyinstaller/Build.py) for its license information.
 
-import optparse, os, time
+import optparse, os, time, sys
 
 def main():
 	'''Handles options and does the magic'''
@@ -36,12 +36,13 @@ def main():
 		help="give details about what the program is doing.")
 	p.add_option("--path", "-p", default='.', help="path to your Dilbert collection.  Should have one subdirectory for each year of Dilberts you have (e.g. 1999, 2000, etc.), each with one strip for each day of the year, named YYYY-MM-DD.png.")
 	options, args = p.parse_args()
+	path = os.path.abspath(os.path.expanduser(os.path.expandvars(options.path)))
 	if options.verbose == None:
 		verbose = False
 	else:
 		verbose = True
-	if update_collection(options.path, verbose) != True:
-		exit(1)
+	if update_collection(path, verbose) != True:
+		sys.exit(1)
 	
 
 def update_collection(path, verbose):
@@ -77,7 +78,7 @@ def update_collection(path, verbose):
 			if verbose == True:
 				print "failed!"
 			else:
-				print "update-dilbert:  problem downloading strip for " + d
+				print "update-dilbert: problem downloading strip for " + d
 			failed = failed + 1
 		else:
 			if verbose == True:
@@ -87,8 +88,8 @@ def update_collection(path, verbose):
 	if failed == 0:
 		return True
 	elif failed == 1:
-		print "There was a problem while downloading one strip."
+		print "update-dilbert: there was a problem while downloading one strip."
 		return False
 	elif failed > 1:
-		print "There was a problem while downloading %n strips." % failed
+		print "update-dilbert: there were problems while downloading %s strips." % str(failed)
 		return False

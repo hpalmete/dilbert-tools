@@ -1,5 +1,5 @@
 Dilbert Tools by Scott Wallace
-Version r25
+Version r29
 http://code.google.com/p/dilbert-tools
 Readme File
 
@@ -41,7 +41,11 @@ where C:\Python25 is where you installed Python.
 What else do I need?
 If you're not using the Windows EXEs*, you need Python 2.5 and the Python
 Imaging Module (PIL).
-* If you want to MAKE the EXE files, you will need Python and PIL.  (See below.)
+NOTE:  Python 3.x will probably NOT WORK!  Use Python 2.5 or 2.6 (untested)
+instead.
+
+(* If you want to MAKE the EXE files, you will need Python and PIL.  (See
+below.))
 
 If you're on Ubuntu, you can install them using:
  $ sudo apt-get install python python-imaging

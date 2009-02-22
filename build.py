@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Dilbert Tools (build script)
-# Copyright (C) 2008 Scott Wallace
+# Copyright (C) 2008-2009 Scott Wallace
 # http://code.google.com/p/dilbert-tools/
 #
 # This program is free software; you can redistribute it and/or modify
@@ -27,7 +27,7 @@ import optparse, platform, os, shutil
 def main():
 	p = optparse.OptionParser(
 		description='Builds the dilbert-tools suite.',
-		prog='build')
+		prog='build.py')
 	p.add_option("--output", "-o", default=None, help="directory to save the resulting files to.  Defaults to unix for Unices and windows for Windows.")
 	p.add_option("--no-exes", "-n", default=False, action="store_true", help="do not make EXE files on Windows, but make regular Python files instead.  Only applicable on Windows.")
 	options, args = p.parse_args()

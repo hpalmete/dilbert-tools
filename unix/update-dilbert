@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # Dilbert Tools (update-dilbert)
-# Copyright (C) 2008 Scott Wallace
+# Copyright (C) 2008-2009 Scott Wallace
 # http://code.google.com/p/dilbert-tools/
 #
 # This program is free software; you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 # for convenience only.  It is not covered under the above license statement.
 # See its source files (e.g. pyinstaller/Build.py) for its license information.
 
-import optparse, os, time
+import optparse, os, time, sys
 
 def main():
 	'''Handles options and does the magic'''
@@ -36,12 +36,13 @@ def main():
 		help="give details about what the program is doing.")
 	p.add_option("--path", "-p", default='.', help="path to your Dilbert collection.  Should have one subdirectory for each year of Dilberts you have (e.g. 1999, 2000, etc.), each with one strip for each day of the year, named YYYY-MM-DD.png.")
 	options, args = p.parse_args()
+	path = os.path.abspath(os.path.expanduser(os.path.expandvars(options.path)))
 	if options.verbose == None:
 		verbose = False
 	else:
 		verbose = True
-	if update_collection(options.path, verbose) != True:
-		exit(1)
+	if update_collection(path, verbose) != True:
+		sys.exit(1)
 	
 
 def update_collection(path, verbose):
@@ -77,7 +78,7 @@ def update_collection(path, verbose):
 			if verbose == True:
 				print "failed!"
 			else:
-				print "update-dilbert:  problem downloading strip for " + d
+				print "update-dilbert: problem downloading strip for " + d
 			failed = failed + 1
 		else:
 			if verbose == True:
@@ -87,17 +88,17 @@ def update_collection(path, verbose):
 	if failed == 0:
 		return True
 	elif failed == 1:
-		print "There was a problem while downloading one strip."
+		print "update-dilbert: there was a problem while downloading one strip."
 		return False
 	elif failed > 1:
-		print "There was a problem while downloading %n strips." % failed
+		print "update-dilbert: there were problems while downloading %s strips." % str(failed)
 		return False
 
 from PIL import Image
-import StringIO, os, time, urllib
+import StringIO, os, time, urllib, sys
 
 # Dilbert Tools (common functions)
-# Copyright (C) 2008 Scott Wallace
+# Copyright (C) 2008-2009 Scott Wallace
 # http://code.google.com/p/dilbert-tools/
 #
 # This program is free software; you can redistribute it and/or modify
@@ -121,31 +122,39 @@ import StringIO, os, time, urllib
 def fetch_strip(date, output):
 	'''Downloads a Dilbert strip, makes it a PNG, and puts it in output.  Requires PIL module (python-imaging package in Ubuntu)'''
 	
-	url = urllib.urlopen("http://www.dilbert.com/fast/%s/" % date)
-	html = url.read()
-	url.close()
-	if html != '':
-		pieces = html.split('<img src="/dyn/str_strip/0', 1)
-		pieces2 = pieces[1].split(".strip.print.gif", 1)
-		output_file = output + "/" + date + ".png"
-		image = urllib.urlopen("http://www.dilbert.com/dyn/str_strip/0" + pieces2[0] + ".strip.gif")
-		strip = image.read()
-		image.close()
-		if strip != '':
-			imagestring = StringIO.StringIO(strip)
-			imagedata = Image.open(imagestring)
-			imagedata.save(output_file)
-			imagestring.close()
-			thetime = time.mktime(time.strptime(date, "%Y-%m-%d"))
-			os.utime(output_file, (thetime, thetime))
-			return True
+	try:
+		url = urllib.urlopen("http://www.dilbert.com/fast/%s/" % date)
+		html = url.read()
+		url.close()
+		if html != '':
+			pieces = html.split('<img src="/dyn/str_strip/0', 1)
+			pieces2 = pieces[1].split(".strip.print.gif", 1)
+			output_file = output + "/" + date + ".png"
+			image = urllib.urlopen("http://www.dilbert.com/dyn/str_strip/0" + pieces2[0] + ".strip.gif")
+			strip = image.read()
+			image.close()
+			if strip != '':
+				imagestring = StringIO.StringIO(strip)
+				imagedata = Image.open(imagestring)
+				imagedata.save(output_file)
+				imagestring.close()
+				thetime = time.mktime(time.strptime(date, "%Y-%m-%d"))
+				os.utime(output_file, (thetime, thetime))
+				return True
+			else:
+				return False
 		else:
 			return False
-	else:
+	except KeyboardInterrupt:
+		print
+		sys.exit()
+	except:
 		return False
 
 def generate_year_list(year, format, todate = False):
-	last_day = int(time.strftime("%j", time.strptime(year + "-12-31", "%Y-%m-%d")))
+	year = int(year)
+	last_day = int(time.strftime("%j", time.strptime(str(year) + "-12-31", "%Y-%m-%d")))
+	first_dilbert = time.strftime(format, time.strptime("1989-04-16", "%Y-%m-%d"))
 	if todate == True:
 		days = int(time.strftime("%j"))
 	elif last_day == 366:
@@ -154,10 +163,12 @@ def generate_year_list(year, format, todate = False):
 		days = 365
 	array = []
 	while days > 0:
-		array.append(
-			time.strftime(format,
-			time.strptime(str(year) + "-" + str(days), "%Y-%j")))
-		days = days - 1
+		day_str = time.strftime(format, time.strptime(str(year) + "-" + str(days), "%Y-%j"))
+		array.append(day_str)
+		if year == 1989 and day_str == first_dilbert:
+			days = 0
+		else:
+			days = days - 1
 	array.sort()
 	return array
 

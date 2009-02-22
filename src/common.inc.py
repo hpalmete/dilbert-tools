@@ -1,8 +1,8 @@
 from PIL import Image
-import StringIO, os, time, urllib
+import StringIO, os, time, urllib, sys
 
 # Dilbert Tools (common functions)
-# Copyright (C) 2008 Scott Wallace
+# Copyright (C) 2008-2009 Scott Wallace
 # http://code.google.com/p/dilbert-tools/
 #
 # This program is free software; you can redistribute it and/or modify
@@ -26,31 +26,39 @@ import StringIO, os, time, urllib
 def fetch_strip(date, output):
 	'''Downloads a Dilbert strip, makes it a PNG, and puts it in output.  Requires PIL module (python-imaging package in Ubuntu)'''
 	
-	url = urllib.urlopen("http://www.dilbert.com/fast/%s/" % date)
-	html = url.read()
-	url.close()
-	if html != '':
-		pieces = html.split('<img src="/dyn/str_strip/0', 1)
-		pieces2 = pieces[1].split(".strip.print.gif", 1)
-		output_file = output + "/" + date + ".png"
-		image = urllib.urlopen("http://www.dilbert.com/dyn/str_strip/0" + pieces2[0] + ".strip.gif")
-		strip = image.read()
-		image.close()
-		if strip != '':
-			imagestring = StringIO.StringIO(strip)
-			imagedata = Image.open(imagestring)
-			imagedata.save(output_file)
-			imagestring.close()
-			thetime = time.mktime(time.strptime(date, "%Y-%m-%d"))
-			os.utime(output_file, (thetime, thetime))
-			return True
+	try:
+		url = urllib.urlopen("http://www.dilbert.com/fast/%s/" % date)
+		html = url.read()
+		url.close()
+		if html != '':
+			pieces = html.split('<img src="/dyn/str_strip/0', 1)
+			pieces2 = pieces[1].split(".strip.print.gif", 1)
+			output_file = output + "/" + date + ".png"
+			image = urllib.urlopen("http://www.dilbert.com/dyn/str_strip/0" + pieces2[0] + ".strip.gif")
+			strip = image.read()
+			image.close()
+			if strip != '':
+				imagestring = StringIO.StringIO(strip)
+				imagedata = Image.open(imagestring)
+				imagedata.save(output_file)
+				imagestring.close()
+				thetime = time.mktime(time.strptime(date, "%Y-%m-%d"))
+				os.utime(output_file, (thetime, thetime))
+				return True
+			else:
+				return False
 		else:
 			return False
-	else:
+	except KeyboardInterrupt:
+		print
+		sys.exit()
+	except:
 		return False
 
 def generate_year_list(year, format, todate = False):
-	last_day = int(time.strftime("%j", time.strptime(year + "-12-31", "%Y-%m-%d")))
+	year = int(year)
+	last_day = int(time.strftime("%j", time.strptime(str(year) + "-12-31", "%Y-%m-%d")))
+	first_dilbert = time.strftime(format, time.strptime("1989-04-16", "%Y-%m-%d"))
 	if todate == True:
 		days = int(time.strftime("%j"))
 	elif last_day == 366:
@@ -59,10 +67,12 @@ def generate_year_list(year, format, todate = False):
 		days = 365
 	array = []
 	while days > 0:
-		array.append(
-			time.strftime(format,
-			time.strptime(str(year) + "-" + str(days), "%Y-%j")))
-		days = days - 1
+		day_str = time.strftime(format, time.strptime(str(year) + "-" + str(days), "%Y-%j"))
+		array.append(day_str)
+		if year == 1989 and day_str == first_dilbert:
+			days = 0
+		else:
+			days = days - 1
 	array.sort()
 	return array
 

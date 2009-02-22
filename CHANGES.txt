@@ -1,8 +1,15 @@
 Dilbert Tools by Scott Wallace
-Version r25
+Version r29
 http://code.google.com/p/dilbert-tools
 Changelog
 
+* 2009-02-22 (r29)
+   o Fixed to not try downloading any Dilbert strips before 1989-04-16 (when
+     the first one was published)
+   o Fixed fetch-dilbert giving exit code 0 if there was a problem downloading
+     a strip or strips using the --date/--dates argument
+   o Both scripts now expand ~ (*nix home directory) and environment variables
+     in argument values
 * 2008-07-15 (r25)
    o Rewritten in Python
    o Requires Python 2.5 and Python Imaging Library (PIL)
