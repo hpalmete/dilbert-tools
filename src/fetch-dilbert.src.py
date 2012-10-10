@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 # Dilbert Tools (fetch-dilbert)
-# Copyright (C) 2008-2009 Scott Wallace
-# http://code.google.com/p/dilbert-tools/
+# Copyright (c) 2008-2012 Scott Zeid
+# http://code.srwz.us/dilbert-tools
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 #
-# IMPORTANT NOTE:  PyInstaller is provided through the project's SVN repository
+# IMPORTANT NOTE:  PyInstaller is provided through the project's git repository
 # for convenience only.  It is not covered under the above license statement.
 # See its source files (e.g. pyinstaller/Build.py) for its license information.
 
