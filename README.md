@@ -1,5 +1,5 @@
 Dilbert Tools  
-Copyright (c) 2008 Scott Zeid  
+Copyright (c) 2008-2012 Scott Zeid  
 [http://code.srwz.us/dilbert-tools](http://code.srwz.us/dilbert-tools)  
 
 This consists of two Python command-line scripts:
