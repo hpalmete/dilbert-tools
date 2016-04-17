@@ -1,6 +1,6 @@
 Dilbert Tools  
 Copyright (c) 2008-2012 Scott Zeid  
-[http://code.srwz.us/dilbert-tools](http://code.srwz.us/dilbert-tools)  
+[https://code.s.zeid.me/dilbert-tools](https://code.s.zeid.me/dilbert-tools)  
 
 This consists of two Python command-line scripts:
 
@@ -174,7 +174,7 @@ a help message.
 
 ## How do I use them?
 Once you've extracted the scripts (see next question), see
-<http://code.srwz.us/dilbert-tools>, or run `fetch-dilbert --help`
+<https://code.s.zeid.me/dilbert-tools>, or run `fetch-dilbert --help`
 or `update-dilbert` --help for usage instructions.  You need to be in a
 command prompt (Windows) (Start > Run > cmd.exe > OK) or a terminal
 (`*`nix) to run them.

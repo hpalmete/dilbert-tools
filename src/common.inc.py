@@ -3,7 +3,7 @@ import StringIO, os, time, urllib, sys
 
 # Dilbert Tools (common functions)
 # Copyright (c) 2008-2012 Scott Zeid
-# http://code.srwz.us/dilbert-tools
+# https://code.s.zeid.me/dilbert-tools
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
