@@ -1,5 +1,5 @@
 Dilbert Tools
-Copyright (c) 2008-2012 Scott Zeid
+Copyright (c) 2008-2016 Scott Zeid
 https://code.s.zeid.me/dilbert-tools
 
 Changes

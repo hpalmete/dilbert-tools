@@ -1,8 +1,5 @@
-from PIL import Image
-import StringIO, os, time, urllib, sys
-
-# Dilbert Tools (common functions)
-# Copyright (c) 2008-2012 Scott Zeid
+# Dilbert Tools (utils)
+# Copyright (c) 2008-2016 Scott Zeid
 # https://code.s.zeid.me/dilbert-tools
 #
 # This program is free software; you can redistribute it and/or modify
@@ -18,13 +15,19 @@ import StringIO, os, time, urllib, sys
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-#
-# IMPORTANT NOTE:  PyInstaller is provided through the project's git repository
-# for convenience only.  It is not covered under the above license statement.
-# See its source files (e.g. pyinstaller/Build.py) for its license information.
 
-def fetch_strip(date, output):
-	'''Downloads a Dilbert strip, makes it a PNG, and puts it in output.  Requires PIL module (python-imaging package in Ubuntu)'''
+import time
+
+try:
+	import cStringIO as StringIO
+except ImportError:
+	import StringIO
+
+from PIL import Image
+
+
+def fetch_strip(date, output_dir):
+	"""Downloads a Dilbert strip and converts it to PNG format."""
 	
 	try:
 		url = urllib.urlopen("http://www.dilbert.com/fast/%s/" % date)
@@ -33,7 +36,7 @@ def fetch_strip(date, output):
 		if html != '':
 			pieces = html.split('<img src="/dyn/str_strip/0', 1)
 			pieces2 = pieces[1].split(".strip.print.gif", 1)
-			output_file = output + "/" + date + ".png"
+			output_file = output_dir + "/" + date + ".png"
 			image = urllib.urlopen("http://www.dilbert.com/dyn/str_strip/0" + pieces2[0] + ".strip.gif")
 			strip = image.read()
 			image.close()
@@ -49,13 +52,11 @@ def fetch_strip(date, output):
 				return False
 		else:
 			return False
-	except KeyboardInterrupt:
-		print
-		sys.exit()
 	except:
 		return False
 
-def generate_year_list(year, format, todate = False):
+
+def generate_year_list(year, format, todate=False):
 	year = int(year)
 	last_day = int(time.strftime("%j", time.strptime(str(year) + "-12-31", "%Y-%m-%d")))
 	first_dilbert = time.strftime(format, time.strptime("1989-04-16", "%Y-%m-%d"))
@@ -75,10 +76,3 @@ def generate_year_list(year, format, todate = False):
 			days = days - 1
 	array.sort()
 	return array
-
-def error(msg, code = 0):
-	print msg
-	exit(code)
-
-if __name__ == '__main__':
-	main()

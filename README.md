@@ -1,5 +1,5 @@
 Dilbert Tools  
-Copyright (c) 2008-2012 Scott Zeid  
+Copyright (c) 2008-2016 Scott Zeid  
 [https://code.s.zeid.me/dilbert-tools](https://code.s.zeid.me/dilbert-tools)  
 
 This consists of two Python command-line scripts:
@@ -8,7 +8,7 @@ This consists of two Python command-line scripts:
 
 `update-dilbert` helps you maintain a private Dilbert collection
 
-Both can be run on Python 2.5 on any supported platform, with the Python Imaging Library (PIL) module.  Windows EXE versions of the scripts are also available that do not require Python to be installed.
+Both can be run on Python 2.7 on any supported platform, with the Pillow module.  Windows EXE versions of the scripts are also available that do not require Python or Pillow to be installed separately.
 
 # Disclaimer
 **These scripts are automated scripts that will scrape various pages from
@@ -22,12 +22,13 @@ Both can be run on Python 2.5 on any supported platform, with the Python Imaging
 **If you're using the EXE version on Windows, you don't need to install
 these.**  Otherwise, you'll need to install these if you haven't already:
 
- * Python 2.5 or 2.6 (not tested with 2.7 or 3.x)
- * Python Imaging Library (PIL)
+ * Python 2.7
+ * Pillow
 
-You can install these on Ubuntu and other Debian-based distros with:
+You can install these with:
 
-    $ sudo apt-get install python python-imaging
+    fedora$ sudo dnf install python python-pillow
+    ubuntu/debian$ sudo apt-get install python python-pillow
 
 # `fetch-dilbert`
 
