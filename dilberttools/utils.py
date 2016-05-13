@@ -20,22 +20,22 @@ import time
 
 
 def generate_year_list(year, format, todate=False):
-	year = int(year)
-	last_day = int(time.strftime("%j", time.strptime(str(year) + "-12-31", "%Y-%m-%d")))
-	first_dilbert = time.strftime(format, time.strptime("1989-04-16", "%Y-%m-%d"))
-	if todate == True:
-		days = int(time.strftime("%j"))
-	elif last_day == 366:
-		days = 366
-	else:
-		days = 365
-	array = []
-	while days > 0:
-		day_str = time.strftime(format, time.strptime(str(year) + "-" + str(days), "%Y-%j"))
-		array.append(day_str)
-		if year == 1989 and day_str == first_dilbert:
-			days = 0
-		else:
-			days = days - 1
-	array.sort()
-	return array
+ year = int(year)
+ last_day = int(time.strftime("%j", time.strptime(str(year) + "-12-31", "%Y-%m-%d")))
+ first_dilbert = time.strftime(format, time.strptime("1989-04-16", "%Y-%m-%d"))
+ if todate == True:
+  days = int(time.strftime("%j"))
+ elif last_day == 366:
+  days = 366
+ else:
+  days = 365
+ array = []
+ while days > 0:
+  day_str = time.strftime(format, time.strptime(str(year) + "-" + str(days), "%Y-%j"))
+  array.append(day_str)
+  if year == 1989 and day_str == first_dilbert:
+   days = 0
+  else:
+   days = days - 1
+ array.sort()
+ return array
