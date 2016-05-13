@@ -22,7 +22,13 @@ import sys
 import time
 import urllib
 
-from .utils import fetch_strip
+try:
+	import cStringIO as StringIO
+except ImportError:
+	import StringIO
+
+from PIL import Image
+
 from .utils import generate_year_list
 
 
@@ -79,6 +85,36 @@ def main(argv=sys.argv, recurse=True):
 			print >> sys.stderr, "fetch-dilbert: there were problems while downloading %s strips." % str(failed)
 	else:
 		p.print_help()
+
+
+def fetch_strip(date, output_dir):
+	"""Downloads a Dilbert strip and converts it to PNG format."""
+	
+	try:
+		url = urllib.urlopen("http://www.dilbert.com/fast/%s/" % date)
+		html = url.read()
+		url.close()
+		if html != '':
+			pieces = html.split('<img src="/dyn/str_strip/0', 1)
+			pieces2 = pieces[1].split(".strip.print.gif", 1)
+			output_file = output_dir + "/" + date + ".png"
+			image = urllib.urlopen("http://www.dilbert.com/dyn/str_strip/0" + pieces2[0] + ".strip.gif")
+			strip = image.read()
+			image.close()
+			if strip != '':
+				imagestring = StringIO.StringIO(strip)
+				imagedata = Image.open(imagestring)
+				imagedata.save(output_file)
+				imagestring.close()
+				thetime = time.mktime(time.strptime(date, "%Y-%m-%d"))
+				os.utime(output_file, (thetime, thetime))
+				return True
+			else:
+				return False
+		else:
+			return False
+	except:
+		return False
 
 
 if __name__ == "__main__":
