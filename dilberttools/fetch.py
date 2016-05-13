@@ -17,10 +17,13 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
 import argparse
+import json
 import os
 import sys
 import time
 import urllib
+
+from collections import OrderedDict
 
 try:
  import cStringIO as StringIO
@@ -100,7 +103,12 @@ def fetch_strip(date, output_dir):
    container = parser.findAll("div", class_="img-comic-container")[0]
    image_el = container.find("img", class_="img-comic")
    image_url = image_el["src"]
+   title_el = parser.find("span", class_="comic-title-name")
+   title = title_el.text if title_el else None
+   title = title or None
+   transcript = image_el["alt"] if image_el.get("alt", "") else None
    output_file = output_dir + "/" + date + ".png"
+   meta_file = output_dir + "/" + date + ".yml"
    image_fd = urllib.urlopen(image_url)
    strip = image_fd.read()
    image_fd.close()
@@ -109,8 +117,20 @@ def fetch_strip(date, output_dir):
     imagedata = Image.open(imagestring)
     imagedata.save(output_file)
     imagestring.close()
+    metadata = OrderedDict()
+    metadata["date"] = date
+    metadata["title"] = title
+    metadata["transcript"] = transcript
+    with open(meta_file, "w") as f:
+     f.write("date: %s\n" % date)
+     f.write("title: %s\n" % (json.dumps(title) if title else "null"))
+     if transcript:
+      f.write("transcript: |\n %s\n" % transcript.rstrip().replace("\n", "\n "))
+     else:
+      f.write("transcript: null\n")
     thetime = time.mktime(time.strptime(date, "%Y-%m-%d"))
     os.utime(output_file, (thetime, thetime))
+    os.utime(meta_file, (thetime, thetime))
     return True
    else:
     return False

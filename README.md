@@ -4,7 +4,7 @@ Copyright (c) 2008-2016 Scott Zeid
 
 This consists of two Python command-line scripts:
 
-`fetch-dilbert` downloads individual Dilbert comic strips
+`fetch-dilbert` downloads individual Dilbert comic strips and their metadata
 
 `update-dilbert` helps you maintain a private Dilbert collection
 
@@ -26,25 +26,31 @@ these.**  Otherwise, you'll need to install these if you haven't already:
  * Pillow
  * BeautifulSoup 4
  * lxml
+ * PyYAML
 
 Fedora:
 
-    sudo dnf install python python-pillow python-lxml python-pip
-    sudo pip install beautifulsoup4
+    sudo dnf install python python-pillow python-lxml PyYAML python-pip
+    sudo pip install -U beautifulsoup4
 
 Ubuntu and other Debian-based distros:
 
-    sudo apt-get install python python-pillow python-lxml python-pip
-    sudo pip install beautifulsoup4
+    sudo apt-get install python python-pillow python-lxml python-yaml python-pip
+    sudo pip install -U beautifulsoup4
 
 Other platforms, with Python 2.7 and pip already installed:
 
-    pip install Pillow lxml beautifulsoup4
+    pip install -U Pillow lxml beautifulsoup4 PyYAML
 
 # `fetch-dilbert`
 
 This script is capable of downloading Dilbert strips for a given day or
-days, or a whole year at a time.
+days, or a whole year at a time.  It will also save the strips' titles
+and transcripts to YAML files.
+
+Each YAML file will be named `YYYY-MM-DD.yml` and will have the keys `date`,
+`title`, and `transcript`.  If there is no title or transcript for the strip,
+then the respective key's value will be null.
 
 ## Usage
 
