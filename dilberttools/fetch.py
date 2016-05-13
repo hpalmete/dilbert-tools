@@ -27,6 +27,7 @@ try:
 except ImportError:
  import StringIO
 
+from bs4 import BeautifulSoup
 from PIL import Image
 
 from .utils import generate_year_list
@@ -91,16 +92,18 @@ def fetch_strip(date, output_dir):
  """Downloads a Dilbert strip and converts it to PNG format."""
  
  try:
-  url = urllib.urlopen("http://www.dilbert.com/fast/%s/" % date)
+  url = urllib.urlopen("http://dilbert.com/strip/%s" % date)
   html = url.read()
   url.close()
   if html != '':
-   pieces = html.split('<img src="/dyn/str_strip/0', 1)
-   pieces2 = pieces[1].split(".strip.print.gif", 1)
+   parser = BeautifulSoup(html, "lxml")
+   container = parser.findAll("div", class_="img-comic-container")[0]
+   image_el = container.find("img", class_="img-comic")
+   image_url = image_el["src"]
    output_file = output_dir + "/" + date + ".png"
-   image = urllib.urlopen("http://www.dilbert.com/dyn/str_strip/0" + pieces2[0] + ".strip.gif")
-   strip = image.read()
-   image.close()
+   image_fd = urllib.urlopen(image_url)
+   strip = image_fd.read()
+   image_fd.close()
    if strip != '':
     imagestring = StringIO.StringIO(strip)
     imagedata = Image.open(imagestring)
@@ -113,7 +116,7 @@ def fetch_strip(date, output_dir):
     return False
   else:
    return False
- except:
+ except Exception as exc:
   return False
 
 

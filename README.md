@@ -24,11 +24,22 @@ these.**  Otherwise, you'll need to install these if you haven't already:
 
  * Python 2.7
  * Pillow
+ * BeautifulSoup 4
+ * lxml
 
-You can install these with:
+Fedora:
 
-    fedora$ sudo dnf install python python-pillow
-    ubuntu/debian$ sudo apt-get install python python-pillow
+    sudo dnf install python python-pillow python-lxml python-pip
+    sudo pip install beautifulsoup4
+
+Ubuntu and other Debian-based distros:
+
+    sudo apt-get install python python-pillow python-lxml python-pip
+    sudo pip install beautifulsoup4
+
+Other platforms, with Python 2.7 and pip already installed:
+
+    pip install Pillow lxml beautifulsoup4
 
 # `fetch-dilbert`
 
