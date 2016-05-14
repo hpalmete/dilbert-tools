@@ -4,6 +4,15 @@ https://code.s.zeid.me/dilbert-tools
 
 Changes
 
+* 2016-05-xx
+   * Support the new dilbert.com redesign
+   * Save YAML files for each strip containing the strip's date, title, and
+     transcript
+   * Now requires Python 2.7, Pillow, BeautifulSoup 4, lxml, and PyYAML
+   * New build process (just run `make` from the root of the repository)
+   * Reorganized source tree
+   * Binary blobs and PyInstaller are no longer kept in the Git repository
+   * Now on GitLab
 * 2012-10-10
    * Updated copyright notices
    * Updated README file and converted it to Markdown
