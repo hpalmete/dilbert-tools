@@ -141,39 +141,6 @@ If you want it to tell you what it's doing, run
 `update-dilbert -v (path to collection)`.  `update-dilbert -h` will show
 a help message.
 
-## Changes
- * 2009-02-22 (r29)
-   * Fixed to not try downloading any Dilbert strips before 1989-04-16
-     (when the first one was published)
-   * Now expands ~ (`*`nix home directory) and environment variables in
-     argument values
- * 2008-07-15 (r25)
-   * Rewritten in Python
-   * Requires Python 2.5 and Python Imaging Library (PIL)
-   * Specify collection path for update with --path=PATH option
-   * --verbose, --help, and --path have short options:  -v, -h, and -p
-     respectively in update
-   * --help's output is very short now in both scripts
- * 2008-07-12
-   * Uses dilbert.com/fast to find the strip URL; less bandwidth used
-   * fetchStrip() changes modification time on DL'd strips to match the
-     strip's date to help sorting by modification time
-   * Since fetchStrip() touches strips now, and the update script used to
-     do that, remove that from the update script
- * 2008-07-01
-   * Force error reporting to `E_WARNING` to prevent unnecessary messages.
- * 2008-06-30
-   * No configuration needed
-   * Windows exe that does not require PHP to be installed
-   * Requires GD module
-   * Can be run without fetch-dilbert
-   * Runs on Windows
- * 2008-06-27
-   * Added error handling
-   * Other minor changes
- * 2008-06-24
-   * Initial public release
-
 # Archive contents
  * Unix/Linux/OSX (`*`nix)
     * fetch-dilbert - `*`nix script
