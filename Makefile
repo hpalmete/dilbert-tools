@@ -30,9 +30,27 @@ sdist: prep
 	./setup.py sdist
 	mv dist/"$$("./setup.py" --fullname)".tar.gz "dist/${version}"
 
-dist: sdist \
-      dist/${version}/${name}-${version}-posix.zip \
-      dist/${version}/${name}-${version}-windows.zip
+zip_base = dist/${version}/${name}-${version}
+
+do_windows = 0
+ifneq "$(wildcard dist/${version}/fetch-dilbert.exe)" ""
+ ifneq "$(wildcard dist/${version}/update-dilbert.exe)" ""
+  do_windows = 1
+ endif
+endif
+
+ifneq "${do_windows}" "0"
+ windows_zip = ${zip_base}-windows.zip
+else
+ windows_zip = 
+endif
+
+no_windows_warning:
+	@[ x"${do_windows}" != x"0" ] && true || \
+	echo 'warning: not creating Windows zip file because not all EXEs' \
+	     'exist in' "dist/${version}" >&2
+
+dist: sdist ${zip_base}-posix.zip ${windows_zip} no_windows_warning
 
 dist/${version}/${name}-${version}-%.zip: platform = $*
 dist/${version}/${name}-${version}-%.zip: in_dir = dist/${version}
@@ -42,6 +60,14 @@ dist/${version}/${name}-${version}-%.zip: tmp_file = ${out_dir}/tmp.zip
 dist/${version}/${name}-${version}-%.zip: prep scripts
 	rm -rf "${tmp_dir}" "${tmp_file}"
 	mkdir -p "${tmp_dir}/${name}-${version}-$*"
+	@if [ x"${platform}" = x"windows" ]; then \
+	 for i in fetch update; do \
+	  [ -f "${in_dir}/$$i-dilbert.exe" ] && continue; \
+	  echo 'warning: not creating Windows zip file because not all EXEs' \
+	       'exist in' "${in_dir}" >&2; \
+	  exit; \
+	 done; \
+	fi
 	cd "${in_dir}"; zip -r "../../${tmp_file}" . \
 	 -x "*.zip" -x "*.tar.gz" -x "*tmp*"
 	zip -r "${tmp_file}" README.md CHANGES.txt LICENSE.txt
