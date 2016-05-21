@@ -29,7 +29,7 @@ setup(
   "Topic :: Utilities",
  ],
  packages=find_packages(),
- install_requires=["Pillow"],
+ install_requires=["beautifulsoup4", "lxml", "Pillow", "PyYAML"],
  entry_points={
   "console_scripts": [
    "fetch-dilbert=dilberttools.fetch:main",
