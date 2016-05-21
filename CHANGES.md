@@ -3,6 +3,10 @@
     * Save YAML files for each strip containing the strip's date, title, and
       transcript
     * Now requires Python 2.7, Pillow, BeautifulSoup 4, lxml, and PyYAML
+    * Restructured into a Python package
+    * The non-EXE executable script files are now ZIP files containing the
+      code files.  They can still be executed just like regular Python scripts
+      and still have shebang lines.
     * New build process (just run `make` from the root of the repository,
       and `make dist` to make the distribution files; does not make EXE files)
     * Reorganized source tree
