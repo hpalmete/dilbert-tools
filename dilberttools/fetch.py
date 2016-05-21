@@ -103,7 +103,9 @@ def main(argv=sys.argv, recurse=True):
   elif failed > 1:
    print >> sys.stderr, "fetch-dilbert: there were problems while downloading %s strips." % str(failed)
  else:
-  p.print_help()
+  print >> sys.stderr, p.format_help()
+  print >> sys.stderr, p.prog + ": error: no date/year argument given"
+  return 2
 
 
 def fetch_strip(date, output_dir):
