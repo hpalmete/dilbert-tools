@@ -4,5 +4,6 @@
 *.pyo
 *.egg-info
 
+build
 dist
 test
