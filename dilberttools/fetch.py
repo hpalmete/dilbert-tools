@@ -46,23 +46,32 @@ def main(argv=sys.argv, recurse=True):
  
  error_msg = "fetch-dilbert: error downloading the strip for " 
  modes = ['date', 'dates', 'year']
+ 
  p = argparse.ArgumentParser(
-  description='Downloads a given Dilbert strip or strips.',
-  prog='fetch-dilbert')
+  prog='fetch-dilbert',
+  description='Downloads a given Dilbert strip or strips.'
+ )
  p.add_argument("--version", "-V", action="store_true",
                 help="show version number and exit")
- p.add_argument("--date", "-d", help="download one or more strips, separated by a comma.  May be in YYYY-MM-DD format, or the word today (to download today's strip).")
- p.add_argument("--dates", help="same as above.")
- p.add_argument("--year", "-y", help="download all strips from YEAR.")
- p.add_argument("--output-dir", "--output", "-o", default='.', help="directory to save the strip(s) to.  Defaults to the current directory.")
+ p.add_argument("--date", "-d",
+                help="download one or more strips, separated by a comma.  May"
+                     " be in YYYY-MM-DD format, or the word today.")
+ p.add_argument("--dates", help="same as above")
+ p.add_argument("--year", "-y", help="download all strips from the given year")
+ p.add_argument("--output-dir", "--output", "-o", default='.',
+                help="directory to save the strip(s) to.  Defaults to the"
+                     " current directory.")
  try:
   options = p.parse_args(argv[1:])
  except SystemExit as exc:
   return exc.code
+ 
  if options.version:
   print __version__
   return 0
+ 
  output_dir = os.path.abspath(os.path.expanduser(os.path.expandvars(options.output_dir)))
+ 
  mode = None
  for i in modes:
   if hasattr(options, i) and getattr(options, i) != None:

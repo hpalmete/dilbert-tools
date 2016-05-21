@@ -34,28 +34,34 @@ def main(argv=sys.argv, recurse=True):
    pass
  
  p = argparse.ArgumentParser(
-  description='Updates a collection of Dilbert strips.',
-  prog='update-dilbert')
+  prog='update-dilbert',
+  description='Updates a collection of Dilbert strips.'
+ )
  p.add_argument("--version", "-V", action="store_true",
                 help="show version number and exit")
- p.add_argument(
-  "--verbose",
-  "-v", 
-  action="store_true",
-  help="give details about what the program is doing.")
- p.add_argument("--path", "-p", default='.', help="path to your Dilbert collection.  Should have one subdirectory for each year of Dilberts you have (e.g. 1999, 2000, etc.), each with one strip for each day of the year, named YYYY-MM-DD.png.")
+ p.add_argument("--verbose", "-v", action="store_true",
+                help="show verbose status output")
+ p.add_argument("--path", "-p", default='.',
+                help="path to your Dilbert collection.  Should have one"
+                     " subdirectory for each year of Dilberts you have"
+                     " (e.g. 1999, 2000, etc.), each with one strip for"
+                     " each day of the year, named YYYY-MM-DD.png.")
  try:
   options = p.parse_args(argv[1:])
  except SystemExit as exc:
   return exc.code
+ 
  if options.version:
   print __version__
   return 0
+ 
  path = os.path.abspath(os.path.expanduser(os.path.expandvars(options.path)))
+ 
  if options.verbose == None:
   verbose = False
  else:
   verbose = True
+ 
  if update_collection(path, verbose) != True:
   sys.exit(1)
  
