@@ -2,7 +2,7 @@ name = dilbert-tools
 package = $(shell ./setup.py --name)
 version = $(shell ./setup.py --version)
 
-all: scripts sdist dist
+all: scripts
 .PHONY: scripts sdist dist prep clean
 
 src_dir = ${package}
@@ -30,7 +30,8 @@ sdist: prep
 	./setup.py sdist
 	mv dist/"$$("./setup.py" --fullname)".tar.gz "dist/${version}"
 
-dist: dist/${version}/${name}-${version}-posix.zip \
+dist: sdist \
+      dist/${version}/${name}-${version}-posix.zip \
       dist/${version}/${name}-${version}-windows.zip
 
 dist/${version}/${name}-${version}-%.zip: platform = $*
@@ -38,7 +39,7 @@ dist/${version}/${name}-${version}-%.zip: in_dir = dist/${version}
 dist/${version}/${name}-${version}-%.zip: out_dir = $(dir $@)
 dist/${version}/${name}-${version}-%.zip: tmp_dir = ${out_dir}/tmp-zip
 dist/${version}/${name}-${version}-%.zip: tmp_file = ${out_dir}/tmp.zip
-dist/${version}/${name}-${version}-%.zip: prep
+dist/${version}/${name}-${version}-%.zip: prep scripts
 	rm -rf "${tmp_dir}" "${tmp_file}"
 	mkdir -p "${tmp_dir}/${name}-${version}-$*"
 	cd "${in_dir}"; zip -r "../../${tmp_file}" . \
