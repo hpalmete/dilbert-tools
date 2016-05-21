@@ -21,6 +21,7 @@ import os
 import sys
 import time
 
+from . import __version__
 from .fetch import fetch_strip
 from .utils import generate_year_list
 
@@ -35,6 +36,8 @@ def main(argv=sys.argv, recurse=True):
  p = argparse.ArgumentParser(
   description='Updates a collection of Dilbert strips.',
   prog='update-dilbert')
+ p.add_argument("--version", "-V", action="store_true",
+                help="show version number and exit")
  p.add_argument(
   "--verbose",
   "-v", 
@@ -45,6 +48,9 @@ def main(argv=sys.argv, recurse=True):
   options = p.parse_args(argv[1:])
  except SystemExit as exc:
   return exc.code
+ if options.version:
+  print __version__
+  return 0
  path = os.path.abspath(os.path.expanduser(os.path.expandvars(options.path)))
  if options.verbose == None:
   verbose = False

@@ -3,6 +3,8 @@
     * Save YAML files for each strip containing the strip's date, title, and
       transcript
     * Now requires Python 2.7, Pillow, BeautifulSoup 4, lxml, and PyYAML
+    * Added a `--version/-V` argument to both scripts that prints the version
+      number and exits
     * Restructured into a Python package
     * The non-EXE executable script files are now ZIP files containing the
       code files.  They can still be executed just like regular Python scripts

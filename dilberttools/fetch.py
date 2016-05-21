@@ -33,6 +33,7 @@ except ImportError:
 from bs4 import BeautifulSoup
 from PIL import Image
 
+from . import __version__
 from .utils import generate_year_list
 
 
@@ -48,6 +49,8 @@ def main(argv=sys.argv, recurse=True):
  p = argparse.ArgumentParser(
   description='Downloads a given Dilbert strip or strips.',
   prog='fetch-dilbert')
+ p.add_argument("--version", "-V", action="store_true",
+                help="show version number and exit")
  p.add_argument("--date", "-d", help="download one or more strips, separated by a comma.  May be in YYYY-MM-DD format, or the word today (to download today's strip).")
  p.add_argument("--dates", help="same as above.")
  p.add_argument("--year", "-y", help="download all strips from YEAR.")
@@ -56,6 +59,9 @@ def main(argv=sys.argv, recurse=True):
   options = p.parse_args(argv[1:])
  except SystemExit as exc:
   return exc.code
+ if options.version:
+  print __version__
+  return 0
  output_dir = os.path.abspath(os.path.expanduser(os.path.expandvars(options.output_dir)))
  mode = None
  for i in modes:
