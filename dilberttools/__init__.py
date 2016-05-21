@@ -20,10 +20,12 @@
 # (No shit, Sherlock.)
 
 __author__  = "Scott Zeid <support+dilbert-tools@s.zeid.me>"
-__version__ = "0.20160500"
+__version__ = ""; from version import __version__
+
 
 import fetch
 import update
 import utils
+
 
 __all__ = ["fetch", "update", "utils"]
