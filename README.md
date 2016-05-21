@@ -116,8 +116,8 @@ it will use the current directory.  `<path>` should contain directories whose
 names are year numbers.  Year subdirectories will be created if necessary.
 
 
-Building
---------
+Building dilbert-tools
+----------------------
 
 To build dilbert-tools, run `make` from the root of the repository in a
 Unix-like environment with the below dependencies installed.
