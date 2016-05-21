@@ -1,0 +1,29 @@
+#!/bin/sh
+
+dir="$(dirname "$0")"; dir="$(cd "$dir"; pwd)"
+
+package=dilberttools
+tools="fetch update"
+
+tool=
+for i in $tools; do
+ if [ x"$1" = x"$i" ]; then
+  tool=$1
+  break
+ fi
+done
+
+if [ x"$tool" = x"" ]; then
+ if [ x"$1" != x"" ]; then
+  echo "run: error: unrecognized tool '$1'" >&2
+ else
+  echo 'Usage: run <tool> [args [...]]' >&2
+  echo 'Tools:' "$(printf '%s' "$tools" | sed -e 's/ /, /g')" >&2
+ fi
+ exit 2
+else
+ shift
+fi
+
+export PYTHONPATH="$dir:$PYTHONPATH"
+python2 -m "dilberttools.$tool" "$@"
