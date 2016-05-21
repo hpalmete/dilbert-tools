@@ -70,7 +70,7 @@ dist/${version}/${name}-${version}-%.zip: prep scripts
 	fi
 	cd "${in_dir}"; zip -r "../../${tmp_file}" . \
 	 -x "*.zip" -x "*.tar.gz" -x "*tmp*"
-	zip -r "${tmp_file}" README.md CHANGES.txt LICENSE.txt
+	zip -r "${tmp_file}" README.md CHANGES.md LICENSE.txt
 	cd "${tmp_dir}/${name}-${version}-$*"; \
 	 unzip "../../../../${tmp_file}"; \
 	 if [ x"${platform}" = x"posix" ]; then \
