@@ -9,6 +9,7 @@ all: scripts
 
 define prep =
  mkdir -p "dist/${version}"
+ ln -sfn "${version}" "dist/latest"
 endef
 
 scripts: dist/${version}/fetch-dilbert \
