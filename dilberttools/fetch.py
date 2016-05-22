@@ -117,15 +117,15 @@ def fetch_strip(date, output_dir):
   url.close()
   if html != '':
    parser = BeautifulSoup(html, "lxml")
-   container = parser.findAll("div", class_="img-comic-container")[0]
+   container = parser.find(class_="img-comic-container")
    image_el = container.find("img", class_="img-comic")
    image_url = image_el["src"]
-   title_el = parser.find("span", class_="comic-title-name")
+   title_el = parser.find(class_="comic-title-name")
    title = title_el.text if title_el else None
    title = title or None
    transcript = image_el["alt"] if image_el.get("alt", "") else None
    tags = []
-   tags_el = parser.find("span", class_="comic-tags")
+   tags_el = parser.find(class_="comic-tags")
    if tags_el:
     for el in tags_el.findAll("a"):
      if el.text:
