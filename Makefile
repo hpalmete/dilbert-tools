@@ -1,6 +1,6 @@
 name = dilbert-tools
-package = $(shell ./setup.py --name)
-version = $(shell ./setup.py --version)
+package := $(shell ./setup.py --name)
+version := $(shell ./setup.py --version)
 
 all: scripts
 .PHONY: scripts sdist dist prep clean
