@@ -124,6 +124,12 @@ def fetch_strip(date, output_dir):
    title = title_el.text if title_el else None
    title = title or None
    transcript = image_el["alt"] if image_el.get("alt", "") else None
+   tags = []
+   tags_el = parser.find("span", class_="comic-tags")
+   if tags_el:
+    for el in tags_el.findAll("a"):
+     if el.text:
+      tags += [el.text]
    output_file = output_dir + "/" + date + ".png"
    meta_file = output_dir + "/" + date + ".yml"
    image_fd = urllib.urlopen(image_url)
@@ -141,6 +147,7 @@ def fetch_strip(date, output_dir):
     with open(meta_file, "w") as f:
      f.write("date: %s\n" % date)
      f.write("title: %s\n" % (json.dumps(title) if title else "null"))
+     f.write("tags: %s\n" % json.dumps(tags))
      if transcript:
       f.write("transcript: |\n %s\n" % transcript.rstrip().replace("\n", "\n "))
      else:

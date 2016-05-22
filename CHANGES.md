@@ -1,7 +1,7 @@
 * 2016-05-xx
     * Support the new dilbert.com redesign
-    * Save YAML files for each strip containing the strip's date, title, and
-      transcript
+    * Save YAML files for each strip containing the strip's date, title, tags,
+      and transcript
     * Now requires Python 2.7, Pillow, BeautifulSoup 4, lxml, and PyYAML
     * Added a `--version/-V` argument to both scripts that prints the version
       number and exits

@@ -54,12 +54,12 @@ already installed:
 ---------------
 
 This script downloads Dilbert strips for a given day or days, or a whole
-year at a time.  It will also save the strips' titles and transcripts to
-YAML files.
+year at a time.  It will also save the strips' titles, tags, and transcripts
+to YAML files.
 
 Each YAML file will be named `YYYY-MM-DD.yml` and will have the keys `date`,
-`title`, and `transcript`.  If there is no title or transcript for the strip,
-then the respective key's value will be null.
+`title`, `tags`, and `transcript`.  If there is no title or transcript for the
+strip, then the respective key's value will be null.
 
 
 ### Usage
