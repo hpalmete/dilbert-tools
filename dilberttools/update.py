@@ -59,10 +59,7 @@ def main(argv=sys.argv, recurse=True):
  
  path = os.path.abspath(os.path.expanduser(os.path.expandvars(options.path)))
  
- if options.verbose == None:
-  verbose = False
- else:
-  verbose = True
+ verbose = options.verbose
  
  if update_collection(path, verbose, not options.metadata_only, True) != True:
   sys.exit(1)
@@ -73,7 +70,7 @@ def update_collection(path, verbose, save_strips=True, save_metadata=True):
  current_year_path = path + "/" + year
  if os.path.isdir(current_year_path) != True or os.path.exists(current_year_path) != True:
   os.mkdir(current_year_path, 0755)
-  if verbose == True:
+  if verbose:
    print "Created directory %s." % current_year_path
  directory_list_raw = os.listdir(current_year_path)
  directory_list_raw.sort()
@@ -86,29 +83,29 @@ def update_collection(path, verbose, save_strips=True, save_metadata=True):
   if d + ".png" not in directory_list or d + ".yml" not in directory_list:
    needed_dates.append(d)
  needed_dates.sort()
- if verbose == True:
+ if verbose:
   if len(needed_dates) == 0:
-   print >> sys.stderr, "You're up to date!"
+   print "You're up to date!"
   elif len(needed_dates) == 1:
    if save_metadata and not save_strips:
-    print >> sys.stderr, "Need to get one strip's metadata."
+    print "Need to get one strip's metadata."
    else:
-    print >> sys.stderr, "Need to get one strip."
+    print "Need to get one strip."
   else:
    if save_metadata and not save_strips:
-    print >> sys.stderr, "Need to get %s strips' metadata." % str(len(needed_dates))
+    print "Need to get %s strips' metadata." % str(len(needed_dates))
    else:
-    print >> sys.stderr, "Need to get %s strips." % str(len(needed_dates))
+    print "Need to get %s strips." % str(len(needed_dates))
  failed = 0
  for d in needed_dates:
-  if verbose == True:
+  if verbose:
    if save_metadata and not save_strips:
-    print >> sys.stderr, "Fetching metadata for " + d + "...",
+    print "Fetching metadata for " + d + "...",
    else:
-    print >> sys.stderr, "Fetching strip for " + d + "...",
+    print "Fetching strip for " + d + "...",
   if fetch_strip(d, current_year_path, save_strips, save_metadata) != True:
-   if verbose == True:
-    print >> sys.stderr, "failed!"
+   if verbose:
+    print "failed!"
    else:
     if save_metadata and not save_strips:
      print >> sys.stderr, "update-dilbert: problem downloading metadata for " + d
@@ -116,10 +113,10 @@ def update_collection(path, verbose, save_strips=True, save_metadata=True):
      print >> sys.stderr, "update-dilbert: problem downloading strip for " + d
    failed = failed + 1
   else:
-   if verbose == True:
-    print >> sys.stderr, "done!"
- if verbose == True and len(needed_dates) > 0:
-  print >> sys.stderr, "You're up to date now!"
+   if verbose:
+    print "done!"
+ if verbose and len(needed_dates) > 0:
+  print "You're up to date now!"
  if failed == 0:
   return True
  elif failed == 1:
