@@ -79,11 +79,11 @@ def update_collection(path, verbose, save_strips=True, save_metadata=True):
  directory_list_raw.sort()
  directory_list = []
  for f in directory_list_raw:
-  directory_list.append(f.replace(".png", ""))
+  directory_list.append(f.lower())
  ytd = generate_year_list(year, "%Y-%m-%d", True)
  needed_dates = []
  for d in ytd:
-  if (d in directory_list) == False:
+  if d + ".png" not in directory_list or d + ".yml" not in directory_list:
    needed_dates.append(d)
  needed_dates.sort()
  if verbose == True:
