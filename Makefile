@@ -53,45 +53,33 @@ no_windows_warning:
 dist: sdist ${zip_base}-posix.zip ${windows_zip} no_windows_warning
 
 dist/${version}/${name}-${version}-%.zip: platform = $*
-dist/${version}/${name}-${version}-%.zip: in_dir = dist/${version}
 dist/${version}/${name}-${version}-%.zip: out_dir = $(dir $@)
 dist/${version}/${name}-${version}-%.zip: tmp_dir = ${out_dir}/tmp-zip
-dist/${version}/${name}-${version}-%.zip: tmp_file = ${out_dir}/tmp.zip
+dist/${version}/${name}-${version}-%.zip: tmp_file = ${tmp_dir}/tmp.zip
+dist/${version}/${name}-${version}-%.zip: src = dist/${version}
+dist/${version}/${name}-${version}-%.zip: dest = ${tmp_dir}/${name}-${version}-$*
 dist/${version}/${name}-${version}-%.zip: prep scripts
 	rm -rf "${tmp_dir}" "${tmp_file}"
-	mkdir -p "${tmp_dir}/${name}-${version}-$*"
-	@if [ x"${platform}" = x"windows" ]; then \
-	 for i in fetch update; do \
-	  [ -f "${in_dir}/$$i-dilbert.exe" ] && continue; \
-	  echo 'warning: not creating Windows zip file because not all EXEs' \
-	       'exist in' "${in_dir}" >&2; \
-	  exit; \
-	 done; \
-	fi
-	cd "${in_dir}"; zip -r "../../${tmp_file}" . \
-	 -x "*.zip" -x "*.tar.gz" -x "*tmp*"
-	zip -r "${tmp_file}" README.md CHANGES.md LICENSE.txt
-	cd "${tmp_dir}/${name}-${version}-$*"; \
-	 unzip "../../../../${tmp_file}"; \
-	 if [ x"${platform}" = x"posix" ]; then \
-	  rm -f *pyi* *.exe; \
-	 elif [ x"${platform}" = x"windows" ]; then \
-	  for i in fetch update; do \
-	   rm -f "$$i-dilbert-pyi"; \
-	   mv "$$i-dilbert" "$$i-dilbert.py"; \
-	  done; \
+	mkdir -p "${dest}"
+	cp -a README.md CHANGES.md LICENSE.txt "${dest}"
+	for i in fetch update; do \
+	 cp -a "${src}/$$i-dilbert" "${dest}"; \
+	 if [ x"${platform}" = x"windows" ]; then \
+	  cp -a "${src}/$$i-dilbert.exe" "${dest}"; \
+	  mv "${dest}/$$i-dilbert" "${dest}/$$i-dilbert.py"; \
 	 fi; \
+	done
+	if [ x"${platform}" = x"windows" ]; then \
 	 for i in CHANGES README; do \
-	  if [ -f "$$i.md" ]; then \
-	   sed -e 's/\r\?$$/\r/g' < "$$i.md" > "$$i.txt"; \
-	   rm -f "$$i.md"; \
+	  if [ -f "${dest}/$$i.md" ]; then \
+	   sed -e 's/\r\?$$/\r/g' < "${dest}/$$i.md" > "${dest}/$$i.txt"; \
+	   rm -f "${dest}/$$i.md"; \
 	  fi; \
 	 done; \
-	 cd ..; \
-	  rm -f "../../../${tmp_file}"; \
-	  zip -r "../../../${tmp_file}" "${name}-${version}-$*"
-	rm -rf "${tmp_dir}"
+	fi
+	cd "${tmp_dir}"; zip -r "$(notdir ${tmp_file})" "$(notdir ${dest})"
 	mv "${tmp_file}" "$@"
+	rm -rf "${tmp_dir}"
 
 prep:
 	mkdir -p "dist/${version}"
