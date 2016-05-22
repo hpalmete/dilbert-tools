@@ -52,13 +52,16 @@ endif
 ifneq "${do_windows}" "0"
  windows_zip = ${zip_base}-windows.zip
 else
- windows_zip = no_windows_warning
+ windows_zip = 
 endif
 
-no_windows_warning:
-	@[ x"${do_windows}" != x"0" ] && true || \
+define no_windows_warning =
+	[ x"${do_windows}" != x"0" ] && true || \
 	echo 'warning: not creating Windows zip file because not all EXEs' \
 	     'exist in' "dist/${version}" >&2
+endef
+
+$(shell $(no_windows_warning))
 
 zips: ${zip_base}-posix.zip ${windows_zip}
 
@@ -91,6 +94,7 @@ dist/${version}/${name}-${version}-%.zip: ${src_dir}/* Makefile | scripts
 	cd "${tmp_dir}"; zip -r "$(notdir ${tmp_file})" "$(notdir ${dest})"
 	mv "${tmp_file}" "$@"
 	rm -rf "${tmp_dir}"
+	@$(no_windows_warning)
 
 prep:
 	mkdir -p "dist/${version}"
