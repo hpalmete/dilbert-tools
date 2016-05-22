@@ -2,10 +2,14 @@ name = dilbert-tools
 package := $(shell ./setup.py --name)
 version := $(shell ./setup.py --version)
 
-all: scripts
-.PHONY: scripts sdist dist prep clean
-
 src_dir = ${package}
+
+all: scripts
+.PHONY: scripts dist sdist zips prep clean
+
+define prep =
+ mkdir -p "dist/${version}"
+endef
 
 scripts: dist/${version}/fetch-dilbert \
          dist/${version}/update-dilbert
@@ -13,7 +17,8 @@ scripts: dist/${version}/fetch-dilbert \
 dist/${version}/%-dilbert: tmp_dir = dist/${version}/tmp-$*
 dist/${version}/%-dilbert: zip = ${tmp_dir}/$*.zip
 dist/${version}/%-dilbert: main_py = ${tmp_dir}/__main__.py
-dist/${version}/%-dilbert: prep
+dist/${version}/%-dilbert: ${src_dir}/* Makefile
+	$(prep)
 	rm -rf "${tmp_dir}"
 	mkdir -p "${tmp_dir}"
 	zip -r "${zip}" "${src_dir}"/*.py
@@ -26,9 +31,14 @@ dist/${version}/%-dilbert: prep
 	chmod a+x "$@"
 	rm -rf "${tmp_dir}"
 
-sdist: prep
+dist: sdist zips
+
+sdist: dist/${version}/${package}-${version}.tar.gz
+
+dist/${version}/${package}-${version}.tar.gz: ${src_dir}/* Makefile
+	$(prep)
 	./setup.py sdist
-	mv dist/"$$("./setup.py" --fullname)".tar.gz "dist/${version}"
+	mv "dist/${package}-${version}.tar.gz" "dist/${version}"
 
 zip_base = dist/${version}/${name}-${version}
 
@@ -42,7 +52,7 @@ endif
 ifneq "${do_windows}" "0"
  windows_zip = ${zip_base}-windows.zip
 else
- windows_zip = 
+ windows_zip = no_windows_warning
 endif
 
 no_windows_warning:
@@ -50,7 +60,7 @@ no_windows_warning:
 	echo 'warning: not creating Windows zip file because not all EXEs' \
 	     'exist in' "dist/${version}" >&2
 
-dist: sdist ${zip_base}-posix.zip ${windows_zip} no_windows_warning
+zips: ${zip_base}-posix.zip ${windows_zip}
 
 dist/${version}/${name}-${version}-%.zip: platform = $*
 dist/${version}/${name}-${version}-%.zip: out_dir = $(dir $@)
@@ -58,7 +68,8 @@ dist/${version}/${name}-${version}-%.zip: tmp_dir = ${out_dir}/tmp-zip
 dist/${version}/${name}-${version}-%.zip: tmp_file = ${tmp_dir}/tmp.zip
 dist/${version}/${name}-${version}-%.zip: src = dist/${version}
 dist/${version}/${name}-${version}-%.zip: dest = ${tmp_dir}/${name}-${version}-$*
-dist/${version}/${name}-${version}-%.zip: prep scripts
+dist/${version}/${name}-${version}-%.zip: ${src_dir}/* Makefile | scripts
+	$(prep)
 	rm -rf "${tmp_dir}" "${tmp_file}"
 	mkdir -p "${dest}"
 	cp -a README.md CHANGES.md LICENSE.txt "${dest}"
