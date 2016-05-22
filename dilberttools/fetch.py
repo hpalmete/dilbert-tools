@@ -108,14 +108,14 @@ def main(argv=sys.argv, recurse=True):
   return 2
 
 
-def fetch_strip(date, output_dir):
+def fetch_strip(date, output_dir, save_strip=True, save_metadata=True):
  """Downloads a Dilbert strip and converts it to PNG format."""
  
  try:
   url = urllib.urlopen("http://dilbert.com/strip/%s" % date)
   html = url.read()
   url.close()
-  if html != '':
+  if html:
    parser = BeautifulSoup(html, "lxml")
    container = parser.find(class_="img-comic-container")
    image_el = container.find("img", class_="img-comic")
@@ -132,29 +132,32 @@ def fetch_strip(date, output_dir):
       tags += [el.text.strip()]
    output_file = output_dir + "/" + date + ".png"
    meta_file = output_dir + "/" + date + ".yml"
-   image_fd = urllib.urlopen(image_url)
-   strip = image_fd.read()
-   image_fd.close()
-   if strip != '':
-    imagestring = StringIO.StringIO(strip)
-    imagedata = Image.open(imagestring)
-    imagedata.save(output_file)
-    imagestring.close()
-    metadata = OrderedDict()
-    metadata["date"] = date
-    metadata["title"] = title
-    metadata["transcript"] = transcript
-    with open(meta_file, "w") as f:
-     f.write("date: %s\n" % date)
-     f.write("title: %s\n" % (json.dumps(title) if title else "null"))
-     f.write("tags: %s\n" % json.dumps(tags))
-     if transcript:
-      f.write("transcript: |\n %s\n" % transcript.rstrip().replace("\n", "\n "))
-     else:
-      f.write("transcript: null\n")
-    thetime = time.mktime(time.strptime(date, "%Y-%m-%d"))
-    os.utime(output_file, (thetime, thetime))
-    os.utime(meta_file, (thetime, thetime))
+   mtime = time.mktime(time.strptime(date, "%Y-%m-%d"))
+   if image_url:
+    if save_strip:
+     image_fd = urllib.urlopen(image_url)
+     strip = image_fd.read()
+     image_fd.close()
+     if strip:
+      imagestring = StringIO.StringIO(strip)
+      imagedata = Image.open(imagestring)
+      imagedata.save(output_file)
+      imagestring.close()
+      os.utime(output_file, (mtime, mtime))
+    if save_metadata:
+     metadata = OrderedDict()
+     metadata["date"] = date
+     metadata["title"] = title
+     metadata["transcript"] = transcript
+     with open(meta_file, "w") as f:
+      f.write("date: %s\n" % date)
+      f.write("title: %s\n" % (json.dumps(title) if title else "null"))
+      f.write("tags: %s\n" % json.dumps(tags))
+      if transcript:
+       f.write("transcript: |\n %s\n" % transcript.rstrip().replace("\n", "\n "))
+      else:
+       f.write("transcript: null\n")
+     os.utime(meta_file, (mtime, mtime))
     return True
    else:
     return False

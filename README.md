@@ -108,7 +108,7 @@ results.
 
 ### Usage
 
-Syntax:  `update-dilbert [--help|-h] [-v|--verbose] [-p|--path <path>]`
+Syntax:  `update-dilbert [--help|-h] [-v|--verbose] [-p|--path <path>] [-m|--metadata-only]`
 
 Run `update-dilbert -p <path>`, where `<path>` is where you keep your Dilbert
 strips, and it will do the dirty work for you.  If the `-p` argument is omitted,
