@@ -57,7 +57,8 @@ def main(argv=sys.argv, recurse=True):
                 help="download one or more strips, separated by a comma.  May"
                      " be in YYYY-MM-DD format, or the word today.")
  p.add_argument("--dates", help="same as above")
- p.add_argument("--year", "-y", help="download all strips from the given year")
+ p.add_argument("--year", "-y",
+                help="download all strips from the given year (1989 or later)")
  p.add_argument("--output-dir", "--output", "-o", default='.',
                 help="directory to save the strip(s) to.  Defaults to the"
                      " current directory.")
