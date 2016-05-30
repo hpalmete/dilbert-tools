@@ -20,6 +20,9 @@ import argparse
 import os
 import sys
 import time
+import traceback
+
+from collections import OrderedDict as odict
 
 from . import __version__
 from .fetch import fetch_strip
@@ -61,11 +64,12 @@ def main(argv=sys.argv, recurse=True):
  
  verbose = options.verbose
  
- if update_collection(path, verbose, not options.metadata_only, True) != True:
+ if len(update_collection(path, verbose, not options.metadata_only, True)):
   sys.exit(1)
  
 
 def update_collection(path, verbose, save_strips=True, save_metadata=True):
+ errors = odict()
  year = time.strftime("%Y")
  current_year_path = path + "/" + year
  if os.path.isdir(current_year_path) != True or os.path.exists(current_year_path) != True:
@@ -103,34 +107,35 @@ def update_collection(path, verbose, save_strips=True, save_metadata=True):
     print "Fetching metadata for " + d + "...",
    else:
     print "Fetching strip for " + d + "...",
-  if fetch_strip(d, current_year_path, save_strips, save_metadata) != True:
+  try:
+   fetch_strip(d, current_year_path, save_strips, save_metadata)
+  except Exception:
+   tb = traceback.format_exc()
+   errors[d] = tb
    if verbose:
     print "failed!"
+   if save_metadata and not save_strips:
+    print >> sys.stderr, "update-dilbert: problem downloading metadata for " + d
    else:
-    if save_metadata and not save_strips:
-     print >> sys.stderr, "update-dilbert: problem downloading metadata for " + d
-    else:
-     print >> sys.stderr, "update-dilbert: problem downloading strip for " + d
+    print >> sys.stderr, "update-dilbert: problem downloading strip for " + d
+   print >> sys.stderr, tb
    failed = failed + 1
   else:
    if verbose:
     print "done!"
- if verbose and len(needed_dates) > 0:
+ if verbose and len(needed_dates) > 0 and not failed:
   print "You're up to date now!"
- if failed == 0:
-  return True
- elif failed == 1:
+ if failed == 1:
   if save_metadata and not save_strips:
    print >> sys.stderr, "update-dilbert: there was a problem while downloading one strip's metadata."
   else:
    print >> sys.stderr, "update-dilbert: there was a problem while downloading one strip."
-  return False
  elif failed > 1:
   if save_metadata and not save_strips:
    print >> sys.stderr, "update-dilbert: there were problems while downloading %s strips' metadata." % str(failed)
   else:
    print >> sys.stderr, "update-dilbert: there were problems while downloading %s strips." % str(failed)
-  return False
+ return errors
 
 
 if __name__ == "__main__":

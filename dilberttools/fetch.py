@@ -21,6 +21,7 @@ import json
 import os
 import sys
 import time
+import traceback
 import urllib
 
 from collections import OrderedDict
@@ -34,6 +35,7 @@ from bs4 import BeautifulSoup
 from PIL import Image
 
 from . import __version__
+from .errors import *
 from .utils import generate_year_list
 
 
@@ -85,8 +87,12 @@ def main(argv=sys.argv, recurse=True):
     use_date = time.strftime("%Y-%m-%d")
    else:
     use_date = d
-   if fetch_strip(use_date, output_dir) != True:
+   try:
+    fetch_strip(use_date, output_dir)
+   except Exception:
+    tb = traceback.format_exc()
     print >> sys.stderr, error_msg + use_date
+    print >> sys.stderr, tb
     return 1
  elif mode == 'year':
   year = time.strftime("%Y")
@@ -96,8 +102,12 @@ def main(argv=sys.argv, recurse=True):
    array = generate_year_list(options.year, "%Y-%m-%d")
   failed = 0
   for d in array:
-   if fetch_strip(d, output_dir) != True:
+   try:
+    fetch_strip(d, output_dir)
+   except Exception:
+    tb = traceback.format_exc()
     print >> sys.stderr, error_msg + d
+    print >> sys.stderr, tb
     failed = failed + 1
   if failed == 1:
    print >> sys.stderr, "fetch-dilbert: there was a problem while downloading one strip."
@@ -112,60 +122,58 @@ def main(argv=sys.argv, recurse=True):
 def fetch_strip(date, output_dir, save_strip=True, save_metadata=True):
  """Downloads a Dilbert strip and converts it to PNG format."""
  
- try:
-  url = urllib.urlopen("http://dilbert.com/strip/%s" % date)
-  html = url.read()
-  url.close()
-  if html:
-   parser = BeautifulSoup(html, "lxml")
-   container = parser.find(class_="img-comic-container")
-   image_el = container.find("img", class_="img-comic")
-   image_url = image_el["src"]
-   title_el = parser.find(class_="comic-title-name")
-   title = title_el.text.strip() if title_el else None
-   title = title or None
-   transcript = image_el["alt"].strip() if image_el.get("alt", "") else None
-   tags = []
-   tags_el = parser.find(class_="comic-tags")
-   if tags_el:
-    for el in tags_el.findAll("a"):
-     if el.text:
-      tags += [el.text.strip()]
-   output_file = output_dir + "/" + date + ".png"
-   meta_file = output_dir + "/" + date + ".yml"
-   mtime = time.mktime(time.strptime(date, "%Y-%m-%d"))
-   if image_url:
-    if save_strip:
-     image_fd = urllib.urlopen(image_url)
-     strip = image_fd.read()
-     image_fd.close()
-     if strip:
-      imagestring = StringIO.StringIO(strip)
-      imagedata = Image.open(imagestring)
-      imagedata.save(output_file)
-      imagestring.close()
-      os.utime(output_file, (mtime, mtime))
-    if save_metadata:
-     metadata = OrderedDict()
-     metadata["date"] = date
-     metadata["title"] = title
-     metadata["transcript"] = transcript
-     with open(meta_file, "w") as f:
-      f.write("date: %s\n" % date)
-      f.write("title: %s\n" % (json.dumps(title) if title else "null"))
-      f.write("tags: %s\n" % json.dumps(tags))
-      if transcript:
-       f.write("transcript: |\n %s\n" % transcript.rstrip().replace("\n", "\n "))
-      else:
-       f.write("transcript: null\n")
-     os.utime(meta_file, (mtime, mtime))
-    return True
-   else:
-    return False
+ url = urllib.urlopen("http://dilbert.com/strip/%s" % date)
+ html = url.read()
+ url.close()
+ if html:
+  parser = BeautifulSoup(html, "lxml")
+  container = parser.find(class_="img-comic-container")
+  image_el = container.find("img", class_="img-comic")
+  image_url = image_el["src"]
+  title_el = parser.find(class_="comic-title-name")
+  title = title_el.text.strip() if title_el else None
+  title = title or None
+  transcript = image_el["alt"].strip() if image_el.get("alt", "") else None
+  tags = []
+  tags_el = parser.find(class_="comic-tags")
+  if tags_el:
+   for el in tags_el.findAll("a"):
+    if el.text:
+     tags += [el.text.strip()]
+  output_file = output_dir + "/" + date + ".png"
+  meta_file = output_dir + "/" + date + ".yml"
+  mtime = time.mktime(time.strptime(date, "%Y-%m-%d"))
+  if image_url:
+   if save_strip:
+    image_fd = urllib.urlopen(image_url)
+    strip = image_fd.read()
+    image_fd.close()
+    if strip:
+     imagestring = StringIO.StringIO(strip)
+     imagedata = Image.open(imagestring)
+     imagedata.save(output_file)
+     imagestring.close()
+     os.utime(output_file, (mtime, mtime))
+    else:
+     raise DilbertToolsError("strip download failed")
+   if save_metadata:
+    metadata = OrderedDict()
+    metadata["date"] = date
+    metadata["title"] = title
+    metadata["transcript"] = transcript
+    with open(meta_file, "w") as f:
+     f.write("date: %s\n" % date)
+     f.write("title: %s\n" % (json.dumps(title) if title else "null"))
+     f.write("tags: %s\n" % json.dumps(tags))
+     if transcript:
+      f.write("transcript: |\n %s\n" % transcript.rstrip().replace("\n", "\n "))
+     else:
+      f.write("transcript: null\n")
+    os.utime(meta_file, (mtime, mtime))
   else:
-   return False
- except Exception as exc:
-  return False
+   raise DilbertToolsError("could not find strip image URL")
+ else:
+  raise DilbertToolsError("could not download strip page")
 
 
 if __name__ == "__main__":
