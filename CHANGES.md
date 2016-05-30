@@ -5,6 +5,7 @@
     * Errors are now handled properly:  tracebacks are printed to standard
       error and are raised/returned from the fetch_strip()/update_collection()
       functions (yay for being a better programmer now!)
+    * Added `-v/--verbose` to fetch-dilbert
     * Now requires Python 2.7, Pillow, BeautifulSoup 4, lxml, and PyYAML
     * Added a `--version/-V` argument to both scripts that prints the version
       number and exits

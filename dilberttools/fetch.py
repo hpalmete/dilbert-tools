@@ -55,6 +55,8 @@ def main(argv=sys.argv, recurse=True):
  )
  p.add_argument("--version", "-V", action="store_true",
                 help="show version number and exit")
+ p.add_argument("--verbose", "-v", action="store_true",
+                help="show verbose status output")
  p.add_argument("--date", "-d",
                 help="download one or more strips, separated by a comma.  May"
                      " be in YYYY-MM-DD format, or the word today.")
@@ -75,6 +77,8 @@ def main(argv=sys.argv, recurse=True):
  
  output_dir = os.path.abspath(os.path.expanduser(os.path.expandvars(options.output_dir)))
  
+ verbose = options.verbose
+ 
  mode = None
  for i in modes:
   if hasattr(options, i) and getattr(options, i) != None:
@@ -87,13 +91,21 @@ def main(argv=sys.argv, recurse=True):
     use_date = time.strftime("%Y-%m-%d")
    else:
     use_date = d
+   if verbose:
+    print "Fetching strip for " + use_date + "...",
+    sys.stdout.flush()
    try:
     fetch_strip(use_date, output_dir)
    except Exception:
     tb = traceback.format_exc()
+    if verbose:
+     print "failed!"
     print >> sys.stderr, error_msg + use_date
     print >> sys.stderr, tb
     return 1
+   else:
+    if verbose:
+     print "done!"
  elif mode == 'year':
   year = time.strftime("%Y")
   if options.year == year:
@@ -102,13 +114,21 @@ def main(argv=sys.argv, recurse=True):
    array = generate_year_list(options.year, "%Y-%m-%d")
   failed = 0
   for d in array:
+   if verbose:
+    print "Fetching strip for " + d + "...",
+    sys.stdout.flush()
    try:
     fetch_strip(d, output_dir)
    except Exception:
     tb = traceback.format_exc()
+    if verbose:
+     print "failed!"
     print >> sys.stderr, error_msg + d
     print >> sys.stderr, tb
     failed = failed + 1
+   else:
+    if verbose:
+     print "done!"
   if failed == 1:
    print >> sys.stderr, "fetch-dilbert: there was a problem while downloading one strip."
   elif failed > 1:
