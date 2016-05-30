@@ -107,6 +107,7 @@ def update_collection(path, verbose, save_strips=True, save_metadata=True):
     print "Fetching metadata for " + d + "...",
    else:
     print "Fetching strip for " + d + "...",
+    sys.stdout.flush()
   try:
    fetch_strip(d, current_year_path, save_strips, save_metadata)
   except Exception:
