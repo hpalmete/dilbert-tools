@@ -46,25 +46,25 @@ To install dilbert-tools, you have several options:
 If you are not installing dilbert-tools with pip or using the Windows EXEs,
 then you must also install the following:
 
-* Pillow
 * BeautifulSoup 4
 * lxml
+* Pillow
 * PyYAML
 
 To install the requirements on Fedora:
 
-    sudo dnf install python python-pillow python-lxml PyYAML python-pip
+    sudo dnf install python python-lxml python-pillow PyYAML python-pip
     sudo pip install -U beautifulsoup4
 
 To install the requirements on Ubuntu and other Debian-based distros:
 
-    sudo apt-get install python python-pillow python-lxml python-yaml python-pip
+    sudo apt-get install python python-lxml python-pillow python-yaml python-pip
     sudo pip install -U beautifulsoup4
 
 To install the requirements on other platforms, with Python 2.7 and pip
 already installed:
 
-    pip install -U Pillow lxml beautifulsoup4 PyYAML
+    pip install -U beautifulsoup4 lxml Pillow PyYAML
 
 
 `fetch-dilbert`
