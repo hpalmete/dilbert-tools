@@ -1,4 +1,4 @@
-* 2016-05-xx
+* 2016-06-xx
     * Support the new dilbert.com redesign
     * Save YAML files for each strip containing the strip's date, title, tags,
       and transcript
