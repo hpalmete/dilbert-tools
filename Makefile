@@ -64,11 +64,17 @@ else
  windows_zip = 
 endif
 
-define no_windows_warning =
+ifneq "$(filter dist,$(MAKECMDGOALS))" ""
+ define no_windows_warning =
 	[ x"${do_windows}" != x"0" ] && true || \
 	echo 'warning: not creating Windows zip file because not all EXEs' \
 	     'exist in' "dist/${version}" >&2
-endef
+ endef
+else
+ define no_windows_warning =
+	true
+ endef
+endif
 
 $(shell $(no_windows_warning))
 
