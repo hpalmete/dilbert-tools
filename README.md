@@ -142,8 +142,8 @@ Unix-like environment with the below dependencies installed.
 To make the distribution zip files, run `make dist`.  Windows EXE files must be
 created manually, and the Windows zip file will be created only if EXE files
 for both scripts exist in `dist/<version-number>`.  The official EXEs are
-created with [PyInstaller][PyInstaller] and [this `mkexe` script][mkexe], but
-similar freezing utilities are fine as well.
+created with [PyInstaller][PyInstaller] and [this `mkexe` script][mkexe] on
+a Windows XP virtual machine, but similar freezing utilities are fine as well.
 
 [PyInstaller]: http://www.pyinstaller.org/
 [mkexe]: https://code.s.zeid.me/bin/blob/master/mkexe
