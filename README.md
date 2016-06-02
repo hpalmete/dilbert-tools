@@ -50,21 +50,22 @@ then you must also install the following:
 * lxml
 * Pillow
 * PyYAML
+* Requests
 
 To install the requirements on Fedora:
 
-    sudo dnf install python python-lxml python-pillow PyYAML python-pip
+    sudo dnf install python python-lxml python-pillow PyYAML python-requests python-pip
     sudo pip install -U beautifulsoup4
 
 To install the requirements on Ubuntu and other Debian-based distros:
 
     sudo apt-get install python python-lxml python-pillow python-yaml python-pip
-    sudo pip install -U beautifulsoup4
+    sudo pip install -U beautifulsoup4 requests
 
 To install the requirements on other platforms, with Python 2.7 and pip
 already installed:
 
-    pip install -U beautifulsoup4 lxml Pillow PyYAML
+    pip install -U beautifulsoup4 lxml Pillow PyYAML requests
 
 
 `fetch-dilbert`
@@ -77,6 +78,12 @@ to YAML files.
 Each YAML file will be named `YYYY-MM-DD.yml` and will have the keys `date`,
 `title`, `tags`, and `transcript`.  If there is no title or transcript for the
 strip, then the respective key's value will be null.
+
+If a strip has to be downloaded from a source other than
+[dilbert.com](http://dilbert.com/), then its YAML file will also have a key
+called `alternate-source` containing the URL of either the page that was used
+or the image URL itself.  A warning will also be printed to standard error for
+each alternate source tried.
 
 
 ### Usage

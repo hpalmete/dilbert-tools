@@ -17,6 +17,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
 import argparse
+import logging
 import os
 import sys
 import time
@@ -25,8 +26,12 @@ import traceback
 from collections import OrderedDict as odict
 
 from . import __version__
+from .errors import *
 from .fetch import fetch_strip
 from .utils import generate_year_list
+
+
+logger = logging.getLogger("update-dilbert")
 
 
 def main(argv=sys.argv, recurse=True):
@@ -35,6 +40,8 @@ def main(argv=sys.argv, recurse=True):
    return main(argv, False)
   except KeyboardInterrupt:
    pass
+ 
+ setup_logging()
  
  p = argparse.ArgumentParser(
   prog='update-dilbert',
@@ -109,7 +116,8 @@ def update_collection(path, verbose, save_strips=True, save_metadata=True):
     print "Fetching strip for " + d + "...",
     sys.stdout.flush()
   try:
-   fetch_strip(d, current_year_path, save_strips, save_metadata)
+   fetch_strip(d, current_year_path, save_strips, save_metadata,
+               _newline_before_warnings=verbose)
   except Exception:
    tb = traceback.format_exc()
    errors[d] = tb

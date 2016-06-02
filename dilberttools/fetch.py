@@ -18,11 +18,11 @@
 
 import argparse
 import json
+import logging
 import os
 import sys
 import time
 import traceback
-import urllib
 
 from collections import OrderedDict
 
@@ -31,12 +31,18 @@ try:
 except ImportError:
  import StringIO
 
-from bs4 import BeautifulSoup
 from PIL import Image
+
+import providers
 
 from . import __version__
 from .errors import *
 from .utils import generate_year_list
+
+
+PROVIDERS_LIST = providers.list()
+
+logger = logging.getLogger("fetch-dilbert")
 
 
 def main(argv=sys.argv, recurse=True):
@@ -45,6 +51,8 @@ def main(argv=sys.argv, recurse=True):
    return main(argv, False)
   except KeyboardInterrupt:
    pass
+ 
+ setup_logging()
  
  error_msg = "fetch-dilbert: error downloading the strip for " 
  modes = ['date', 'dates', 'year']
@@ -95,7 +103,7 @@ def main(argv=sys.argv, recurse=True):
     print "Fetching strip for " + use_date + "...",
     sys.stdout.flush()
    try:
-    fetch_strip(use_date, output_dir)
+    fetch_strip(use_date, output_dir, _newline_before_warnings=verbose)
    except Exception:
     tb = traceback.format_exc()
     if verbose:
@@ -118,7 +126,7 @@ def main(argv=sys.argv, recurse=True):
     print "Fetching strip for " + d + "...",
     sys.stdout.flush()
    try:
-    fetch_strip(d, output_dir)
+    fetch_strip(d, output_dir, _newline_before_warnings=verbose)
    except Exception:
     tb = traceback.format_exc()
     if verbose:
@@ -139,61 +147,80 @@ def main(argv=sys.argv, recurse=True):
   return 2
 
 
-def fetch_strip(date, output_dir, save_strip=True, save_metadata=True):
+def fetch_strip(date, output_dir, save_strip=True, save_metadata=True,
+                _newline_before_warnings=False):
  """Downloads a Dilbert strip and converts it to PNG format."""
  
- url = urllib.urlopen("http://dilbert.com/strip/%s" % date)
- html = url.read()
- url.close()
- if html:
-  parser = BeautifulSoup(html, "lxml")
-  container = parser.find(class_="img-comic-container")
-  image_el = container.find("img", class_="img-comic")
-  image_url = image_el["src"]
-  title_el = parser.find(class_="comic-title-name")
-  title = title_el.text.strip() if title_el else None
-  title = title or None
-  transcript = image_el["alt"].strip() if image_el.get("alt", "") else None
-  tags = []
-  tags_el = parser.find(class_="comic-tags")
-  if tags_el:
-   for el in tags_el.findAll("a"):
-    if el.text:
-     tags += [el.text.strip()]
-  output_file = output_dir + "/" + date + ".png"
-  meta_file = output_dir + "/" + date + ".yml"
-  mtime = time.mktime(time.strptime(date, "%Y-%m-%d"))
-  if image_url:
-   if save_strip:
-    image_fd = urllib.urlopen(image_url)
-    strip = image_fd.read()
-    image_fd.close()
-    if strip:
-     imagestring = StringIO.StringIO(strip)
-     imagedata = Image.open(imagestring)
-     imagedata.save(output_file)
-     imagestring.close()
-     os.utime(output_file, (mtime, mtime))
-    else:
-     raise DilbertToolsError("strip download failed")
-   if save_metadata:
-    metadata = OrderedDict()
-    metadata["date"] = date
-    metadata["title"] = title
-    metadata["transcript"] = transcript
-    with open(meta_file, "w") as f:
-     f.write("date: %s\n" % date)
-     f.write("title: %s\n" % (json.dumps(title) if title else "null"))
-     f.write("tags: %s\n" % json.dumps(tags))
-     if transcript:
-      f.write("transcript: |\n %s\n" % transcript.rstrip().replace("\n", "\n "))
-     else:
-      f.write("transcript: null\n")
-    os.utime(meta_file, (mtime, mtime))
+ any_warnings = [False]
+ def warn(message):
+  if not any_warnings[0]:
+   any_warnings[0] = True
+   if _newline_before_warnings:
+    print >> sys.stderr
+  logger.warning(message)
+ 
+ image_data = None
+ metadata = providers.BaseProvider._metadata(date)
+ last_provider = None
+ last_source_url = None
+ any_metadata = False
+ 
+ for Provider in PROVIDERS_LIST:
+  if last_provider:
+   warn("%s: trying alternate source `%s`" % (date, Provider.DESCRIPTION))
+  strip = Provider().get(date, metadata_only=not save_strip)
+  last_provider = Provider
+  last_source_url = strip.source_url
+  
+  # update only the output metadata keys that have changed from None to not None
+  # or have changed from one non-None value to another non-None value
+  for k in strip.metadata:
+   if not metadata[k] or (strip.metadata[k] and metadata[k] != strip.metadata[k]):
+    metadata[k] = strip.metadata[k]
+  
+  for k in metadata:
+   if k != "date" and metadata[k]:
+    any_metadata = True
+    break
+
+  if save_strip:
+   if strip.image_data:
+    image_data = strip.image_data
+    if any_metadata:
+     break
+  elif any_metadata:
+   break
+ 
+ if not image_data and not any_metadata:
+  raise DilbertToolsError("could not find strip image or metadata")
+ 
+ alternate_provider = last_provider != PROVIDERS_LIST[0]
+ 
+ output_file = output_dir + "/" + date + ".png"
+ meta_file = output_dir + "/" + date + ".yml"
+ mtime = time.mktime(time.strptime(date, "%Y-%m-%d"))
+ 
+ if save_metadata:
+  with open(meta_file, "w") as f:
+   f.write("date: %s\n" % metadata["date"])
+   f.write("title: %s\n" % (json.dumps(metadata["title"] or None)))
+   f.write("tags: %s\n" % json.dumps(metadata["tags"]))
+   if alternate_provider:
+    f.write("alternate-source: %s\n" % json.dumps(last_source_url))
+   if metadata["transcript"]:
+    f.write("transcript: |\n %s\n" % metadata["transcript"].rstrip().replace("\n", "\n "))
+   else:
+    f.write("transcript: null\n")
+  os.utime(meta_file, (mtime, mtime))
+ if save_strip:
+  if strip:
+   image_stringio = StringIO.StringIO(image_data)
+   image_pillow = Image.open(image_stringio)
+   image_pillow.save(output_file)
+   image_stringio.close()
+   os.utime(output_file, (mtime, mtime))
   else:
-   raise DilbertToolsError("could not find strip image URL")
- else:
-  raise DilbertToolsError("could not download strip page")
+   raise DilbertToolsError("could not find strip image")
 
 
 if __name__ == "__main__":

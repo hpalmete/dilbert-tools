@@ -24,6 +24,7 @@ __version__ = ""; from version import __version__
 
 
 import fetch
+import providers
 import update
 import utils
 

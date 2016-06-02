@@ -16,6 +16,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
+import datetime
 import time
 
 
@@ -39,3 +40,26 @@ def generate_year_list(year, format, todate=False):
    days = days - 1
  array.sort()
  return array
+
+
+def firefox_version(today=None):
+ """Returns (approximately) the latest major version of Firefox."""
+ 
+ if today != None and not isinstance(today, datetime.date):
+  raise TypeError("today must be a datetime.date")
+ 
+ epoch_date = datetime.date(2014, 2, 4)
+ epoch_version = 27
+ today = today or datetime.date.today()
+ days = (today - epoch_date).days
+ weeks = days / 7
+ cycles = weeks / 6
+ return epoch_version + cycles
+
+
+def user_agent(today=None):
+ """Returns a user agent string for (approximately) the latest major version of Firefox."""
+ 
+ tpl = "Mozilla/5.0 (Windows NT 10.0; rv:{v}) Gecko/20100101 Firefox/{v}"
+ version = str(firefox_version(today)) + ".0"
+ return tpl.format(v=version)
