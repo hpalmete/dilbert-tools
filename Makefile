@@ -4,6 +4,14 @@ version := $(shell ./setup.py --version)
 
 src_dir = ${package}
 
+src_files := \
+ $(wildcard ${src_dir}/*/*.py) \
+ $(wildcard ${src_dir}/*.py)
+
+src_files := $(filter-out %.pyc %.pyo %.swp,${src_files})
+
+other_prereqs := Makefile
+
 all: scripts
 .PHONY: scripts dist sdist zips prep clean
 
@@ -18,11 +26,11 @@ scripts: dist/${version}/fetch-dilbert \
 dist/${version}/%-dilbert: tmp_dir = dist/${version}/tmp-$*
 dist/${version}/%-dilbert: zip = ${tmp_dir}/$*.zip
 dist/${version}/%-dilbert: main_py = ${tmp_dir}/__main__.py
-dist/${version}/%-dilbert: ${src_dir}/* Makefile
+dist/${version}/%-dilbert: ${src_files} ${other_prereqs}
 	$(prep)
 	rm -rf "${tmp_dir}"
 	mkdir -p "${tmp_dir}"
-	zip -r "${zip}" "${src_dir}"/*.py
+	zip -r "${zip}" $(src_files:%="%")
 	cp -a __main__.py.in "${main_py}"
 	sed -i -e 's/___PACKAGE___/${package}/g' "${main_py}"
 	sed -i -e 's/___MODULE___/$*/g' "${main_py}"
@@ -36,7 +44,7 @@ dist: sdist zips
 
 sdist: dist/${version}/${package}-${version}.tar.gz
 
-dist/${version}/${package}-${version}.tar.gz: ${src_dir}/* Makefile
+dist/${version}/${package}-${version}.tar.gz: ${src_files} ${other_prereqs}
 	$(prep)
 	./setup.py sdist
 	mv "dist/${package}-${version}.tar.gz" "dist/${version}"
@@ -72,7 +80,7 @@ dist/${version}/${name}-${version}-%.zip: tmp_dir = ${out_dir}/tmp-zip
 dist/${version}/${name}-${version}-%.zip: tmp_file = ${tmp_dir}/tmp.zip
 dist/${version}/${name}-${version}-%.zip: src = dist/${version}
 dist/${version}/${name}-${version}-%.zip: dest = ${tmp_dir}/${name}-${version}-$*
-dist/${version}/${name}-${version}-%.zip: ${src_dir}/* Makefile | scripts
+dist/${version}/${name}-${version}-%.zip: ${src_files} ${other_prereqs} | scripts
 	$(prep)
 	rm -rf "${tmp_dir}" "${tmp_file}"
 	mkdir -p "${dest}"
