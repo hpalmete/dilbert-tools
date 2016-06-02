@@ -25,10 +25,27 @@ Disclaimer
   you due to your use or download of them.**
 
 
-Requirements
+Installation
 ------------
 
-* Python 2.7
+dilbert-tools requires Python 2.7 unless you are using the Windows EXEs.
+
+To install dilbert-tools, you have several options:
+
+* Extract `fetch-dilbert` and `update-dilbert` (or the EXE versions if on
+  Windows) from the appropriate zip file for your platform.  If you are
+  not on Windows, make sure `fetch-dilbert` and `update-dilbert` are
+  executable.
+* Download the `dilberttools-<version>.tar.gz` archive and run
+  `pip install <archive>`.
+* From the root of the repository, run `./setup.py install` or `pip install .`.
+
+
+### Requirements
+
+If you are not installing dilbert-tools with pip or using the Windows EXEs,
+then you must also install the following:
+
 * Pillow
 * BeautifulSoup 4
 * lxml
