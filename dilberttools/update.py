@@ -82,7 +82,7 @@ def update_collection(path, verbose, save_strips=True, save_metadata=True):
  if os.path.isdir(current_year_path) != True or os.path.exists(current_year_path) != True:
   os.mkdir(current_year_path, 0755)
   if verbose:
-   print "Created directory %s." % current_year_path
+   print "Created directory `%s`." % current_year_path
  directory_list_raw = os.listdir(current_year_path)
  directory_list_raw.sort()
  directory_list = []
