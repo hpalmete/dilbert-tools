@@ -23,5 +23,10 @@ class DilbertToolsError(Exception):
  pass
 
 
+class NoSuchStripError(DilbertToolsError):
+ """Indicates that a strip has not been published."""
+ pass
+
+
 def setup_logging():
  logging.basicConfig(format='%(name)s: %(levelname)s: %(message)s')
