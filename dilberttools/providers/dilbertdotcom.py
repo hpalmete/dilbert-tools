@@ -39,7 +39,7 @@ class DilbertDotComProvider(BaseProvider):
   # this provider redirects to the latest strip if a future date is given,
   # and to the earliest strip if a date before the first strip (1989-04-16)
   # is given
-  if not re.match(r"/%s/?$" % re.escape(iso_date), resp.url):
+  if not re.search(r"/%s/?$" % re.escape(iso_date), resp.url):
    raise NoSuchStripError(iso_date)
   html = resp.text
   if html:
