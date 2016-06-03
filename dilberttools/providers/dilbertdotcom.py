@@ -16,7 +16,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
+import re
+
 from bs4 import BeautifulSoup
+
+from ..errors import *
 
 from . import BaseProvider
 
@@ -32,6 +36,11 @@ class DilbertDotComProvider(BaseProvider):
   
   strip.source_url = "http://dilbert.com/strip/%s" % iso_date
   resp = self.http.get(strip.source_url)
+  # this provider redirects to the latest strip if a future date is given,
+  # and to the earliest strip if a date before the first strip (1989-04-16)
+  # is given
+  if not re.match(r"/%s/?$" % re.escape(iso_date), resp.url):
+   raise NoSuchStripError(iso_date)
   html = resp.text
   if html:
    parser = BeautifulSoup(html, "lxml")
