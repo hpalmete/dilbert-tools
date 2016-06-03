@@ -78,7 +78,7 @@ def main(argv=sys.argv, recurse=True):
 def update_collection(path, verbose, save_strips=True, save_metadata=True):
  errors = odict()
  year = time.strftime("%Y")
- current_year_path = path + "/" + year
+ current_year_path = os.path.join(path, year)
  if os.path.isdir(current_year_path) != True or os.path.exists(current_year_path) != True:
   os.mkdir(current_year_path, 0755)
   if verbose:

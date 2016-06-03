@@ -207,8 +207,8 @@ def fetch_strip(date, output_dir, save_strip=True, save_metadata=True,
  
  alternate_provider = last_provider != PROVIDERS_LIST[0]
  
- output_file = output_dir + "/" + date + ".png"
- meta_file = output_dir + "/" + date + ".yml"
+ output_file = os.path.join(output_dir, date + ".png")
+ meta_file = os.path.join(output_dir, date + ".yml")
  mtime = time.mktime(time.strptime(date, "%Y-%m-%d"))
  
  if save_metadata:
