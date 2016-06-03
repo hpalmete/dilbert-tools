@@ -39,7 +39,7 @@ def main(argv=sys.argv, recurse=True):
   try:
    return main(argv, False)
   except KeyboardInterrupt:
-   pass
+   return 1
  
  setup_logging()
  
@@ -118,6 +118,8 @@ def update_collection(path, verbose, save_strips=True, save_metadata=True):
   try:
    fetch_strip(d, current_year_path, save_strips, save_metadata,
                _newline_before_warnings=verbose)
+  except KeyboardInterrupt:
+   raise
   except Exception:
    tb = traceback.format_exc()
    errors[d] = tb

@@ -50,7 +50,7 @@ def main(argv=sys.argv, recurse=True):
   try:
    return main(argv, False)
   except KeyboardInterrupt:
-   pass
+   return 1
  
  setup_logging()
  
@@ -104,6 +104,8 @@ def main(argv=sys.argv, recurse=True):
     sys.stdout.flush()
    try:
     fetch_strip(use_date, output_dir, _newline_before_warnings=verbose)
+   except KeyboardInterrupt:
+    raise
    except Exception:
     tb = traceback.format_exc()
     if verbose:
@@ -127,6 +129,8 @@ def main(argv=sys.argv, recurse=True):
     sys.stdout.flush()
    try:
     fetch_strip(d, output_dir, _newline_before_warnings=verbose)
+   except KeyboardInterrupt:
+    raise
    except Exception:
     tb = traceback.format_exc()
     if verbose:
