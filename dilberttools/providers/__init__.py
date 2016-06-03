@@ -16,31 +16,19 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
-#: List of provider class names (sans the trailing "Provider"), sorted from
-#: most to least preferred.  All must be contained in modules inside this
-#: subpackage whose names are the same as the list items but lowercase.  The
-#: modules will be automatically imported and the classes will automatically
-#: appear in ``providers.list()``.
-_names = [
- "DilbertDotCom",
- "DilbertStore",
- "AMUReprints",
-]
+_PROVIDERS = []
+_add = lambda p: _PROVIDERS.append(p)
 
-
-import importlib
-
-from collections import OrderedDict as odict
 
 from .base import BaseProvider
 
-
-_modules = odict()
-for i in _names:
- _modules[i] = importlib.import_module("." + i.lower(), __package__)
-del i
+# Provider class imports.  Classes are added to the list using _add(), with
+# the most preferred provider added first and the least preferred added last.
+from .dilbertdotcom import DilbertDotComProvider as p; _add(p)
+from .dilbertstore import DilbertStoreProvider as p; _add(p)
+from .amureprints import AMUReprintsProvider as p; _add(p)
 
 
 def list():
  """Returns a list of provider classes.  Each item is an actual class."""
- return [getattr(_modules[i], i + "Provider") for i in _names]
+ return _PROVIDERS[:]
