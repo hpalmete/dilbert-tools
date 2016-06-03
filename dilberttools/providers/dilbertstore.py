@@ -26,6 +26,8 @@ FIRST_AVAILABLE_STRIP = time.mktime(time.strptime("2008-04-01", "%Y-%m-%d"))
 
 class DilbertStoreProvider(BaseProvider):
  DESCRIPTION = "thedilbertstore.com"
+ HAS_IMAGES = True
+ HAS_METADATA = False
  
  def get(self, iso_date, metadata_only=False):
   strip = self.Strip(iso_date)

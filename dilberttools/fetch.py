@@ -166,8 +166,15 @@ def fetch_strip(date, output_dir, save_strip=True, save_metadata=True,
  any_metadata = False
  
  for Provider in PROVIDERS_LIST:
+  if image_data:
+   if any_metadata:
+    break
+   elif not Provider.HAS_METADATA:
+    continue
+  
   if last_provider:
    warn("%s: trying alternate source `%s`" % (date, Provider.DESCRIPTION))
+  
   strip = Provider().get(date, metadata_only=not save_strip)
   last_provider = Provider
   last_source_url = strip.source_url

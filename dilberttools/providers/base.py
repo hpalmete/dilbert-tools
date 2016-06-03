@@ -36,6 +36,12 @@ strip provider.
  #: str:  A terse description of the provider, such as a domain name.
  DESCRIPTION = NotImplemented
  
+ #: bool:  Whether or not the provider can find strip images.
+ HAS_IMAGES = NotImplemented
+ 
+ #: bool:  Whether or not the provider can find metadata.
+ HAS_METADATA = NotImplemented
+ 
  def get(self, iso_date, metadata_only=False):
   """Gets the strip and metadata for a given date.
 

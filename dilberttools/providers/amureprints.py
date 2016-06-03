@@ -25,6 +25,8 @@ from . import BaseProvider
 
 class AMUReprintsProvider(BaseProvider):
  DESCRIPTION = "amureprints.com"
+ HAS_IMAGES = True
+ HAS_METADATA = False
  
  def get(self, iso_date, metadata_only=False):
   strip = self.Strip(iso_date)

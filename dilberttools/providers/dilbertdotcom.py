@@ -23,6 +23,8 @@ from . import BaseProvider
 
 class DilbertDotComProvider(BaseProvider):
  DESCRIPTION = "dilbert.com"
+ HAS_IMAGES = True
+ HAS_METADATA = True
  
  def get(self, iso_date, metadata_only=False):
   strip = self.Strip(iso_date)
