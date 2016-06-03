@@ -184,7 +184,7 @@ def fetch_strip(date, output_dir, save_strip=True, save_metadata=True,
     break
 
   if save_strip:
-   if strip.image_data:
+   if strip.image_data and not image_data:
     image_data = strip.image_data
     if any_metadata:
      break
