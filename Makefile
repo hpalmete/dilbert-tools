@@ -24,13 +24,14 @@ scripts: dist/${version}/fetch-dilbert \
          dist/${version}/update-dilbert
 
 dist/${version}/%-dilbert: tmp_dir = dist/${version}/tmp-$*
-dist/${version}/%-dilbert: zip = ${tmp_dir}/$*.zip
+dist/${version}/%-dilbert: zip = ${tmp_dir}/${package}-${version}.zip
 dist/${version}/%-dilbert: main_py = ${tmp_dir}/__main__.py
 dist/${version}/%-dilbert: ${src_files} ${other_prereqs}
 	$(prep)
 	rm -rf "${tmp_dir}"
 	mkdir -p "${tmp_dir}"
-	zip -r "${zip}" $(src_files:%="%")
+	./setup.py bdist_egg -d "${tmp_dir}"
+	mv "${tmp_dir}"/*.egg "${zip}"
 	cp -a __main__.py.in "${main_py}"
 	sed -i -e 's/___PACKAGE___/${package}/g' "${main_py}"
 	sed -i -e 's/___MODULE___/$*/g' "${main_py}"

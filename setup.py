@@ -5,13 +5,11 @@
 
 from setuptools import setup, find_packages
 
-
-exec(compile(open("dilberttools/version.py").read(), "version.py", "exec"))
-
+import versioneer
 
 setup(
  name="dilberttools",
- version=__version__,
+ version=versioneer.get_version(),
  description="Download Dilbert strips and maintain a private Dilbert collection.",
  url="https://code.s.zeid.me/dilbert-tools",
  author="Scott Zeid",
@@ -36,4 +34,5 @@ setup(
    "update-dilbert=dilberttools.update:main",
   ]
  },
+ cmdclass=versioneer.get_cmdclass(),
 )

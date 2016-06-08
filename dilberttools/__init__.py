@@ -20,7 +20,10 @@
 # (No shit, Sherlock.)
 
 __author__  = "Scott Zeid <support+dilbert-tools@s.zeid.me>"
-__version__ = ""; from version import __version__
+
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
 
 
 import fetch
