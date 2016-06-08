@@ -60,7 +60,9 @@ class DilbertDotComProvider(BaseProvider):
    if tags_el:
     for el in tags_el.findAll("a"):
      if el.text:
-      meta["tags"] += [el.text.strip()]
+      tag = el.text.strip().lstrip("#").lstrip()
+      if tag:
+       meta["tags"] += [tag]
    if image_url:
     if not metadata_only:
      resp = self.http.get(image_url)
