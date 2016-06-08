@@ -49,7 +49,13 @@ class DilbertDotComProvider(BaseProvider):
    image_url = image_el["src"]
    title_el = parser.find(class_="comic-title-name")
    meta["title"] = (title_el.text.strip() if title_el else None) or None
-   meta["transcript"] = image_el["alt"].strip() if image_el.get("alt", "") else None
+   transcript_container_el = parser.find(id="js-toggle-transcript-" + iso_date)
+   if transcript_container_el:
+    transcript_el = transcript_container_el.find("p")
+    if transcript_el and transcript_el.text:
+     transcript = transcript_el.text.strip()
+     if transcript:
+      meta["transcript"] = transcript
    tags_el = parser.find(class_="comic-tags")
    if tags_el:
     for el in tags_el.findAll("a"):
