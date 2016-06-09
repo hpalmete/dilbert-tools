@@ -25,8 +25,8 @@ from .base import BaseProvider
 # Provider class imports.  Classes are added to the list using _add(), with
 # the most preferred provider added first and the least preferred added last.
 from .dilbertdotcom import DilbertDotComProvider as p; _add(p)
-from .dilbertstore import DilbertStoreProvider as p; _add(p)
 from .amureprints import AMUReprintsProvider as p; _add(p)
+from .uclick import UclickProvider as p; _add(p)
 
 
 def list():
