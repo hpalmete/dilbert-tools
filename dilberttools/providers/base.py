@@ -70,10 +70,10 @@ Implementations SHOULD use ``self.http`` (a ``requests.Session``) or its alias
 """
   def __init__(self, iso_date):
    #: str:  The URL of the page that was first examined to find the image URL,
-   #: or a more human-friendly source.
+   #: or a more human-friendly URL that corresponds to it.
    self.source_url = None
    
-   #: bytes:  The raw image data suitable for passing to PIL.Image.
+   #: bytes:  The strip's raw image data, suitable for passing to ``PIL.Image``.
    self.image_data = None
    
    #: collections.OrderedDict:  The strip's metadata, consisting of the
