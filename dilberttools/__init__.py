@@ -32,4 +32,9 @@ from . import update
 from . import utils
 
 
-__all__ = ["fetch", "update", "utils"]
+__all__ = [
+ "fetch",
+ "providers",
+ "update",
+ "utils",
+]
