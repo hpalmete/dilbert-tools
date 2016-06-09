@@ -13,7 +13,7 @@ src_files := $(filter-out %.pyc %.pyo %.swp,${src_files})
 other_prereqs := Makefile
 
 all: scripts
-.PHONY: scripts dist sdist zips prep clean
+.PHONY: scripts exes dist sdist zips prep clean
 
 define prep =
  mkdir -p "dist/${version}"
@@ -40,6 +40,13 @@ dist/${version}/%-dilbert: ${src_files} ${other_prereqs}
 	cat "${zip}" >> "$@"
 	chmod a+x "$@"
 	rm -rf "${tmp_dir}"
+
+exes: dist/${version}/fetch-dilbert.exe \
+      dist/${version}/update-dilbert.exe
+
+dist/${version}/%-dilbert.exe: dist/${version}/%-dilbert
+	# <https://code.s.zeid.me/bin/raw/master/ezpyi-wine>
+	ezpyi-wine "$<" "$@" -V "${version}"
 
 dist: sdist zips
 

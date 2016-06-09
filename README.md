@@ -149,11 +149,13 @@ Unix-like environment with the below dependencies installed.
 To make the distribution zip files, run `make dist`.  Windows EXE files must be
 created manually, and the Windows zip file will be created only if EXE files
 for both scripts exist in `dist/<version-number>`.  The official EXEs are
-created with [PyInstaller][PyInstaller] and [this `ezpyi` script][ezpyi] on
-a Windows XP virtual machine, but similar freezing utilities are fine as well.
+created using `make exes`, which uses [PyInstaller][PyInstaller] in [Wine][Wine]
+via [this `ezpyi-wine` script][ezpyi-wine], but other freezing utilities are
+fine as well, as long as they create standalone EXE files.
 
 [PyInstaller]: http://www.pyinstaller.org/
-[ezpyi]: https://code.s.zeid.me/bin/blob/master/ezpyi
+[Wine]: https://www.winehq.org/
+[ezpyi-wine]: https://code.s.zeid.me/bin/blob/master/ezpyi-wine
 
 
 ### Build dependencies
