@@ -33,7 +33,7 @@ except ImportError:
 
 from PIL import Image
 
-import providers
+from . import providers
 
 from . import __version__
 from .errors import *

@@ -26,10 +26,10 @@ __version__ = get_versions()['version']
 del get_versions
 
 
-import fetch
-import providers
-import update
-import utils
+from . import fetch
+from . import providers
+from . import update
+from . import utils
 
 
 __all__ = ["fetch", "update", "utils"]
