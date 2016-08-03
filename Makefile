@@ -12,6 +12,8 @@ src_files := $(filter-out %.pyc %.pyo %.swp,${src_files})
 
 other_prereqs := Makefile
 
+EZPYI_WINE := ezpyi-wine
+
 all: scripts
 .PHONY: scripts exes dist sdist zips prep clean
 
@@ -46,7 +48,7 @@ exes: dist/${version}/fetch-dilbert.exe \
 
 dist/${version}/%-dilbert.exe: dist/${version}/%-dilbert
 	# <https://code.s.zeid.me/bin/raw/master/ezpyi-wine>
-	ezpyi-wine "$<" "$@" -V "${version}"
+	${EZPYI_WINE} "$<" "$@" -V "${version}"
 
 dist: sdist zips
 
