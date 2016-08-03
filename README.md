@@ -164,3 +164,19 @@ fine as well, as long as they create standalone EXE files.
 * GNU make
 * zip
 * setuptools
+
+
+### Using `ezpyi-wine`
+
+To use `ezpyi-wine` to make the Windows binaries:
+
+1. Install Wine.
+
+2. [Download `ezpyi-wine`][ezpyi-wine], and preferably put it somewhere on
+   your `$PATH`.
+
+3. Set up the environment and install the runtime dependencies into it:  
+   
+       ezpyi-wine : pip -U install beautifulsoup4 lxml Pillow PyYAML requests
+
+4. Run `make exes`, or if necessary, `make exes EZPYI_WINE=<path to ezpyi-wine>`.
