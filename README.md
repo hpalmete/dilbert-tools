@@ -88,35 +88,38 @@ each alternate source tried.
 
 ### Usage
 
-Syntax:  `fetch-dilbert [options] [--output-dir|-o <path>]`
+Syntax:  `fetch-dilbert [options] [-o|--output|--output-dir <path>] <date/year> [...]`
 
-The script takes two arguments.  One tells it which strip(s) to download,
-and the other tells it where to put them.
+This script downloads one or more Dilbert strips.
 
-A date or range of dates must be given on the command line using one of the
-following arguments:
+A date or range of dates must be given on the command line as positional
+arguments in one of the following formats:
 
- * `--date=DATE1[,DATE2[,...]]` or `--dates=DATE1[,DATE2[,...]]` or
-   `-d DATE1[,DATE2[,...]]`
-   Download one or more strips.  Each `DATE` can be either in YYYY-MM-DD
-   format (e.g. 2008-06-24) or the word `today` (which tells it to
-   download today's strip).
- * `--year=YEAR` or `-y YEAR`
-   Downloads all strips for the year `YEAR`.
+ * `today`  
+   Download today's strip.
+ * YYYY-MM-DD  
+   Download the strip from the given day.
+ * YYYY  
+   Download the strip from the given year.
 
-The other argument is optional, and it is the folder where you want the
-strip(s) to be saved.
+The `-o/--output/--output-dir` argument is optional, and it is the folder where
+you want the strip(s) to be saved.  It defaults to saving in the current
+directory.
+
+The old `-d/--date`, `--dates`, and `-y/--year` arguments are deprecated, and
+they may be removed at a later date.  You should transition to using the new
+positional arguments if you are still using the old ones.
 
 
 ### Examples
 
- * `fetch-dilbert --dates=today,2008-06-23`
-   Downloads today's strip and the one from June 23, 2008, and saves them
-   to the current working directory.
- * `fetch-dilbert --date=2008-04-15 -o Comics/Dilbert/2008`
+ * `fetch-dilbert today 2008-06-23 1992`  
+   Downloads today's strip, the one from June 23, 2008, and all strips from the
+   year 1992 and saves them to the current working directory.
+ * `fetch-dilbert 2008-04-15 -o Comics/Dilbert/2008`  
    Downloads the strip from April 15, 2008, and saves it to the folder
    `Comics/Dilbert/2008` within the current directory.
- * `fetch-dilbert --year=1997 -o Comics/Dilbert/1997`
+ * `fetch-dilbert 1997 -o Comics/Dilbert/1997`  
    Downloads the strips from the year 1997 and saves them to the folder
    `Comics/Dilbert/1997` within the current directory.
 

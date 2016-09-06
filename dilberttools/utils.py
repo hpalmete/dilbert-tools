@@ -17,7 +17,11 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
 import datetime
+import re
 import time
+
+
+YEAR_RE = re.compile("^[0-9]{4}[0-9]*$")
 
 
 def generate_year_list(year, format, todate=False):
@@ -63,3 +67,7 @@ def user_agent(today=None):
  tpl = "Mozilla/5.0 (Windows NT 10.0; rv:{v}) Gecko/20100101 Firefox/{v}"
  version = str(firefox_version(today)) + ".0"
  return tpl.format(v=version)
+
+
+def is_year(s):
+ return bool(YEAR_RE.search(s))

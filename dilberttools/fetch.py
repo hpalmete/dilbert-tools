@@ -20,6 +20,7 @@ import argparse
 import json
 import logging
 import os
+import re
 import sys
 import time
 import traceback
@@ -37,7 +38,7 @@ from . import providers
 
 from . import __version__
 from .errors import *
-from .utils import generate_year_list
+from .utils import generate_year_list, is_year
 
 
 PROVIDERS_LIST = providers.list()
@@ -55,7 +56,6 @@ def main(argv=sys.argv, recurse=True):
  setup_logging()
  
  error_msg = "fetch-dilbert: error downloading the strip for " 
- modes = ['date', 'dates', 'year']
  
  p = argparse.ArgumentParser(
   prog='fetch-dilbert',
@@ -65,15 +65,33 @@ def main(argv=sys.argv, recurse=True):
                 help="show version number and exit")
  p.add_argument("--verbose", "-v", action="store_true",
                 help="show verbose status output")
- p.add_argument("--date", "-d",
-                help="download one or more strips, separated by a comma.  May"
-                     " be in YYYY-MM-DD format, or the word today.")
- p.add_argument("--dates", help="same as above")
- p.add_argument("--year", "-y",
-                help="download all strips from the given year (1989 or later)")
  p.add_argument("--output-dir", "--output", "-o", default='.',
                 help="directory to save the strip(s) to.  Defaults to the"
                      " current directory.")
+ 
+ # dates argument with custom representation in usage string
+ # (also suppressing deprecated arguments from usage)
+ dates_metavar = "DATE/YEAR"
+ p_usage = re.sub(r"^usage: ", "", p.format_usage()).rstrip()
+ p_usage += "\n" + " " * len("usage: " + re.search(r"^([^ ]+ )", p_usage).group(1))
+ p_usage += dates_metavar + " [...]"
+ p.add_argument("dates", nargs="*", metavar=dates_metavar,
+                help="a date in YYYY-MM-DD format, a year, or the word"
+                     " \"today\"")
+ 
+ # deprecated date/dates/year arguments
+ d = p.add_argument_group("deprecated arguments (use positional arguments"
+                          " instead)")
+ d.add_argument("--date", "-d", dest="old_date", metavar="DATE",
+                help="download one or more strips, separated by a comma.  May"
+                     " be in YYYY-MM-DD format, or the word today.")
+ d.add_argument("--dates", dest="old_dates", metavar="DATES",
+                help="same as above")
+ d.add_argument("--year", "-y", dest="old_year", metavar="YEAR",
+                help="download all strips from the given year (1989 or later)")
+ 
+ p.usage = p_usage
+ 
  try:
   options = p.parse_args(argv[1:])
  except SystemExit as exc:
@@ -87,68 +105,61 @@ def main(argv=sys.argv, recurse=True):
  
  verbose = options.verbose
  
- mode = None
- for i in modes:
-  if hasattr(options, i) and getattr(options, i) != None:
-   mode = i
+ date_args = options.dates[:]
 
- if mode == 'date' or mode == 'dates':
-  dates = getattr(options, mode).split(',')
-  for d in dates:
-   if d == "today":
-    use_date = time.strftime("%Y-%m-%d")
+ # handle deprecated arguments
+ for mode in ("date", "dates", "year"):
+  arg = "old_" + mode
+  if hasattr(options, arg) and getattr(options, arg) != None:
+   logger.warning("the `--%s` argument is deprecated; use positional arguments"
+                  " instead" % mode)
+   if mode == "date" or mode == "dates":
+    date_args += getattr(options, arg).split(",")
+   elif mode == "year":
+    date_args += [getattr(options, arg)]
+ 
+ dates = []
+ for d in date_args:
+  if is_year(d):
+   current_year = time.strftime("%Y")
+   if d == current_year:
+    year_list = generate_year_list(d, "%Y-%m-%d", True)
    else:
-    use_date = d
-   if verbose:
-    print "Fetching strip for " + use_date + "...",
-    sys.stdout.flush()
-   try:
-    fetch_strip(use_date, output_dir, _newline_before_warnings=verbose)
-   except KeyboardInterrupt:
-    raise
-   except Exception:
-    tb = traceback.format_exc()
-    if verbose:
-     print "failed!"
-    print >> sys.stderr, error_msg + use_date
-    print >> sys.stderr, tb
-    return 1
-   else:
-    if verbose:
-     print "done!"
- elif mode == 'year':
-  year = time.strftime("%Y")
-  if options.year == year:
-   array = generate_year_list(options.year, "%Y-%m-%d", True)
+    year_list = generate_year_list(d, "%Y-%m-%d")
+   dates += year_list
+  elif d == "today":
+   dates += [time.strftime("%Y-%m-%d")]
   else:
-   array = generate_year_list(options.year, "%Y-%m-%d")
-  failed = 0
-  for d in array:
-   if verbose:
-    print "Fetching strip for " + d + "...",
-    sys.stdout.flush()
-   try:
-    fetch_strip(d, output_dir, _newline_before_warnings=verbose)
-   except KeyboardInterrupt:
-    raise
-   except Exception:
-    tb = traceback.format_exc()
-    if verbose:
-     print "failed!"
-    print >> sys.stderr, error_msg + d
-    print >> sys.stderr, tb
-    failed = failed + 1
-   else:
-    if verbose:
-     print "done!"
-  if failed == 1:
-   print >> sys.stderr, "fetch-dilbert: there was a problem while downloading one strip."
-  elif failed > 1:
-   print >> sys.stderr, "fetch-dilbert: there were problems while downloading %s strips." % str(failed)
- else:
+   dates += [d]
+ 
+ if not len(dates):
   print >> sys.stderr, p.format_help()
   print >> sys.stderr, p.prog + ": error: no date/year argument given"
   return 2
+ 
+ failed = 0
+ for d in dates:
+  if verbose:
+   print "Fetching strip for " + d + "...",
+   sys.stdout.flush()
+  try:
+   fetch_strip(d, output_dir, _newline_before_warnings=verbose)
+  except KeyboardInterrupt:
+   raise
+  except Exception:
+   tb = traceback.format_exc()
+   if verbose:
+    print "failed!"
+   print >> sys.stderr, error_msg + d
+   print >> sys.stderr, tb
+   failed = failed + 1
+  else:
+   if verbose:
+    print "done!"
+ if failed == 1:
+  print >> sys.stderr, "fetch-dilbert: there was a problem while downloading one strip."
+ elif failed > 1:
+  print >> sys.stderr, "fetch-dilbert: there were problems while downloading %s strips." % str(failed)
 
 
 def fetch_strip(date, output_dir, save_strip=True, save_metadata=True,
