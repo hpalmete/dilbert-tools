@@ -61,11 +61,12 @@ def main(argv=sys.argv, recurse=True):
   prog='fetch-dilbert',
   description='Downloads a given Dilbert strip or strips.'
  )
- p.add_argument("--version", "-V", action="store_true",
+ p.add_argument("-V", "--version", action="store_true",
                 help="show version number and exit")
- p.add_argument("--verbose", "-v", action="store_true",
+ p.add_argument("-v", "--verbose", action="store_true",
                 help="show verbose status output")
- p.add_argument("--output-dir", "--output", "-o", default='.',
+ p.add_argument("-o", "--output", "--output-dir", dest="output_dir",
+                default=".",
                 help="directory to save the strip(s) to.  Defaults to the"
                      " current directory.")
  
@@ -82,12 +83,12 @@ def main(argv=sys.argv, recurse=True):
  # deprecated date/dates/year arguments
  d = p.add_argument_group("deprecated arguments (use positional arguments"
                           " instead)")
- d.add_argument("--date", "-d", dest="old_date", metavar="DATE",
+ d.add_argument("-d", "--date", dest="old_date", metavar="DATE",
                 help="download one or more strips, separated by a comma.  May"
                      " be in YYYY-MM-DD format, or the word today.")
  d.add_argument("--dates", dest="old_dates", metavar="DATES",
                 help="same as above")
- d.add_argument("--year", "-y", dest="old_year", metavar="YEAR",
+ d.add_argument("-y", "--year", dest="old_year", metavar="YEAR",
                 help="download all strips from the given year (1989 or later)")
  
  p.usage = p_usage

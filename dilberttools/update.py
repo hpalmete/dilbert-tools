@@ -47,16 +47,16 @@ def main(argv=sys.argv, recurse=True):
   prog='update-dilbert',
   description='Updates a collection of Dilbert strips.'
  )
- p.add_argument("--version", "-V", action="store_true",
+ p.add_argument("-V", "--version", action="store_true",
                 help="show version number and exit")
- p.add_argument("--verbose", "-v", action="store_true",
+ p.add_argument("-v", "--verbose", action="store_true",
                 help="show verbose status output")
- p.add_argument("--path", "-p", default='.',
+ p.add_argument("-p", "--path", default='.',
                 help="path to your Dilbert collection.  Should have one"
                      " subdirectory for each year of Dilberts you have"
                      " (e.g. 1999, 2000, etc.), each with one strip for"
                      " each day of the year, named YYYY-MM-DD.png.")
- p.add_argument("--metadata-only", "-m", action="store_true",
+ p.add_argument("-m", "--metadata-only", action="store_true",
                 help="only save metadata")
  try:
   options = p.parse_args(argv[1:])
