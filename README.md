@@ -90,8 +90,6 @@ each alternate source tried.
 
 Syntax:  `fetch-dilbert [options] [-o|--output|--output-dir <path>] <date/year> [...]`
 
-This script downloads one or more Dilbert strips.
-
 A date or range of dates must be given on the command line as positional
 arguments in one of the following formats:
 
