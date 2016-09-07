@@ -1,7 +1,11 @@
-* 2016-06-xx
+* 2016-09-xx
     * Support the new dilbert.com redesign
     * Save YAML files for each strip containing the strip's date, title, tags,
       and transcript
+    * In `fetch-dilbert`, dates and years to download are now given as
+      positional arguments (this also allows downloading multiple years at
+      once).  The old `-d/--date`, `--dates`, and `-y/--year` arguments are
+      now deprecated and may be removed at a later date.
     * Try alternate sources if the strip's image cannot be found on dilbert.com.
     * Errors are now handled properly:  tracebacks are printed to standard
       error and are raised/returned from the fetch_strip()/update_collection()
@@ -9,7 +13,7 @@
     * Added `-v/--verbose` to fetch-dilbert
     * Now requires Python 2.7, BeautifulSoup 4, lxml, Pillow, PyYAML, and
       Requests.
-    * Added a `--version/-V` argument to both scripts that prints the version
+    * Added a `-V/--version` argument to both scripts that prints the version
       number and exits
     * Restructured into a Python package
     * The non-EXE executable script files are now ZIP files containing the
