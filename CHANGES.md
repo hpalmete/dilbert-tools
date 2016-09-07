@@ -7,23 +7,28 @@
       once).  The old `-d/--date`, `--dates`, and `-y/--year` arguments are
       now deprecated and may be removed at a later date.
     * Try alternate sources if the strip's image cannot be found on dilbert.com.
-    * Errors are now handled properly:  tracebacks are printed to standard
-      error and are raised/returned from the fetch_strip()/update_collection()
-      functions (yay for being a better programmer now!)
     * Added `-v/--verbose` to fetch-dilbert
     * Now requires Python 2.7, BeautifulSoup 4, lxml, Pillow, PyYAML, and
       Requests.
     * Added a `-V/--version` argument to both scripts that prints the version
       number and exits
-    * Restructured into a Python package
-    * The non-EXE executable script files are now ZIP files containing the
-      code files.  They can still be executed just like regular Python scripts
-      and still have shebang lines.
-    * New build process (just run `make` from the root of the repository,
-      and `make dist` to make the distribution files; does not make EXE files)
-    * Reorganized source tree
-    * Binary blobs and PyInstaller are no longer kept in the Git repository
-    * Now on GitLab
+    * Technical details:
+        * Errors are now handled properly:  tracebacks are printed to standard
+          error and are raised/returned from the fetch_strip()/update_collection()
+          functions (yay for being a better programmer now!)
+        * Restructured into a Python package
+        * The non-EXE executable script files are now ZIP files containing the
+          code files.  They can still be executed just like regular Python scripts
+          and still have shebang lines.
+        * New build process (just run `make` from the root of the repository,
+          and `make dist` to make the distribution files)
+        * Windows EXEs can now be built with `make exes` if you have
+          [`ezpyi`](https://code.s.zeid.me/bin/blob/master/ezpyi) (and
+          [`ezpyi-wine`](https://code.s.zeid.me/bin/blob/master/ezpyi) on
+          non-Windows platforms) on your `PATH`
+        * Reorganized source tree
+        * Binary blobs and PyInstaller are no longer kept in the Git repository
+        * Now on GitLab
 
 * 2012-10-10
     * Updated copyright notices
