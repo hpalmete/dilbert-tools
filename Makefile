@@ -12,6 +12,7 @@ src_files := $(filter-out %.pyc %.pyo %.swp,${src_files})
 
 other_prereqs := Makefile
 
+EZPYI := ezpyi
 EZPYI_WINE := ezpyi-wine
 
 all: scripts
@@ -46,9 +47,16 @@ dist/${version}/%-dilbert: ${src_files} ${other_prereqs}
 exes: dist/${version}/fetch-dilbert.exe \
       dist/${version}/update-dilbert.exe
 
+ifeq "$(shell uname -s | grep -i -e '^\(CYGWIN\|MSYS\)_.*$$')" ""
+ EZPYI := ${EZPYI_WINE}
+ ezpyi_url = https://code.s.zeid.me/bin/raw/master/ezpyi-wine
+else
+ ezpyi_url = https://code.s.zeid.me/bin/raw/master/ezpyi
+endif
+
 dist/${version}/%-dilbert.exe: dist/${version}/%-dilbert
-	# <https://code.s.zeid.me/bin/raw/master/ezpyi-wine>
-	${EZPYI_WINE} "$<" "$@" -V "${version}"
+	# <${ezpyi_url}>
+	${EZPYI} "$<" "$@" -V "${version}"
 
 dist: sdist zips
 
