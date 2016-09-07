@@ -184,8 +184,7 @@ On Unix-like platforms (except Cygwin and MSYS):
    your `$PATH`.
 
 3. Set up the environment and install the runtime dependencies into it:  
-   
-       ezpyi-wine : pip -U install beautifulsoup4 lxml Pillow PyYAML requests
+   `ezpyi-wine : pip -U install beautifulsoup4 lxml Pillow PyYAML requests`
 
 4. Run `make exes`, or if necessary, `make exes EZPYI_WINE=<path to ezpyi-wine>`.
 
