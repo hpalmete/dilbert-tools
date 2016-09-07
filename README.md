@@ -148,16 +148,9 @@ Building dilbert-tools
 To build dilbert-tools, run `make` from the root of the repository in a
 Unix-like environment with the below dependencies installed.
 
-To make the distribution zip files, run `make dist`.  Windows EXE files must be
-created manually, and the Windows zip file will be created only if EXE files
-for both scripts exist in `dist/<version-number>`.  The official EXEs are
-created using `make exes`, which uses [PyInstaller][PyInstaller] in [Wine][Wine]
-via [this `ezpyi-wine` script][ezpyi-wine], but other freezing utilities are
-fine as well, as long as they create standalone EXE files.
-
-[PyInstaller]: http://www.pyinstaller.org/
-[Wine]: https://www.winehq.org/
-[ezpyi-wine]: https://code.s.zeid.me/bin/blob/master/ezpyi-wine
+To make the distribution zip files, run `make dist`.  The Windows zip
+file will be created only if EXE files for both scripts exist in
+`dist/<version-number>`.
 
 
 ### Build dependencies
@@ -168,9 +161,22 @@ fine as well, as long as they create standalone EXE files.
 * setuptools
 
 
-### Using `ezpyi-wine`
+### Making Windows EXEs
 
-To use `ezpyi-wine` to make the Windows binaries:
+The official EXEs are created using `make exes`, which uses [`ezpyi`][ezpyi],
+which is a wrapper for [PyInstaller][PyInstaller].  Except in Cygwin and MSYS,
+`make exes` uses [Wine][Wine] via [this `ezpyi-wine` script][ezpyi-wine].
+
+[ezpyi]: https://code.s.zeid.me/bin/blob/master/ezpyi
+[PyInstaller]: http://www.pyinstaller.org/
+[Wine]: https://www.winehq.org/
+[ezpyi-wine]: https://code.s.zeid.me/bin/blob/master/ezpyi-wine
+
+Note:  Windows Subsystem for Linux cannot be used to build Windows EXEs until
+Microsoft add support for 32-bit ELF executables.  If that happens, then use
+the steps for `ezpyi-wine` on Unix-like platforms.
+
+On Unix-like platforms (except Cygwin and MSYS):
 
 1. Install Wine.
 
@@ -182,3 +188,14 @@ To use `ezpyi-wine` to make the Windows binaries:
        ezpyi-wine : pip -U install beautifulsoup4 lxml Pillow PyYAML requests
 
 4. Run `make exes`, or if necessary, `make exes EZPYI_WINE=<path to ezpyi-wine>`.
+
+
+On Cygwin or MSYS:
+
+1. [Download `ezpyi`][ezpyi], and preferably put it somewhere on your
+   Windows `%PATH%`.
+
+2. Outside of Cygwin/MSYS, install [PyInstaller][PyInstaller] and the runtime
+   dependencies.
+
+3. Run `make exes`, or if necessary, `make exes EZPYI=<path to ezpyi>`.
