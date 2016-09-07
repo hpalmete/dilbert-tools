@@ -22,10 +22,8 @@
           and still have shebang lines.
         * New build process (just run `make` from the root of the repository,
           and `make dist` to make the distribution files)
-        * Windows EXEs can now be built with `make exes` if you have
-          [`ezpyi`](https://code.s.zeid.me/bin/blob/master/ezpyi) (and
-          [`ezpyi-wine`](https://code.s.zeid.me/bin/blob/master/ezpyi) on
-          non-Windows platforms) on your `PATH`
+        * Windows EXEs can now be built with `make exes`, both on Windows and
+          on Unix-like platforms such as Linux (via Wine).
         * Reorganized source tree
         * Binary blobs and PyInstaller are no longer kept in the Git repository
         * Now on GitLab
