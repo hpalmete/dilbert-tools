@@ -44,8 +44,9 @@ To install dilbert-tools, you have several options:
 ### Requirements
 
 If you installed dilbert-tools with pip or if you are using the Windows
-EXEs, then you do not need to install anything else.  Otherwise, you must
-also install the following:
+EXEs, then you do not need to install anything else.
+
+Otherwise, you must also install the following:
 
 * BeautifulSoup 4
 * lxml
