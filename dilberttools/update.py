@@ -16,6 +16,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
+from __future__ import print_function
+
 import argparse
 import logging
 import os
@@ -64,7 +66,7 @@ def main(argv=sys.argv, recurse=True):
   return exc.code
  
  if options.version:
-  print __version__
+  print(__version__)
   return 0
  
  path = os.path.abspath(os.path.expanduser(os.path.expandvars(options.path)))
@@ -80,9 +82,9 @@ def update_collection(path, verbose, save_strips=True, save_metadata=True):
  year = time.strftime("%Y")
  current_year_path = os.path.join(path, year)
  if os.path.isdir(current_year_path) != True or os.path.exists(current_year_path) != True:
-  os.mkdir(current_year_path, 0755)
+  os.mkdir(current_year_path, 0o755)
   if verbose:
-   print "Created directory `%s`." % current_year_path
+   print("Created directory `%s`." % current_year_path)
  directory_list_raw = os.listdir(current_year_path)
  directory_list_raw.sort()
  directory_list = []
@@ -96,24 +98,24 @@ def update_collection(path, verbose, save_strips=True, save_metadata=True):
  needed_dates.sort()
  if verbose:
   if len(needed_dates) == 0:
-   print "You're up to date!"
+   print("You're up to date!")
   elif len(needed_dates) == 1:
    if save_metadata and not save_strips:
-    print "Need to get one strip's metadata."
+    print("Need to get one strip's metadata.")
    else:
-    print "Need to get one strip."
+    print("Need to get one strip.")
   else:
    if save_metadata and not save_strips:
-    print "Need to get %s strips' metadata." % str(len(needed_dates))
+    print("Need to get %s strips' metadata." % str(len(needed_dates)))
    else:
-    print "Need to get %s strips." % str(len(needed_dates))
+    print("Need to get %s strips." % str(len(needed_dates)))
  failed = []
  for d in needed_dates:
   if verbose:
    if save_metadata and not save_strips:
-    print "Fetching metadata for " + d + "...",
+    print("Fetching metadata for " + d + "...", end=' ')
    else:
-    print "Fetching strip for " + d + "...",
+    print("Fetching strip for " + d + "...", end=' ')
     sys.stdout.flush()
   try:
    fetch_strip(d, current_year_path, save_strips, save_metadata,
@@ -124,30 +126,30 @@ def update_collection(path, verbose, save_strips=True, save_metadata=True):
    tb = traceback.format_exc()
    errors[d] = tb
    if verbose:
-    print "failed!"
+    print("failed!")
    if save_metadata and not save_strips:
-    print >> sys.stderr, "update-dilbert: problem downloading metadata for " + d
+    print("update-dilbert: problem downloading metadata for " + d, file=sys.stderr)
    else:
-    print >> sys.stderr, "update-dilbert: problem downloading strip for " + d
-   print >> sys.stderr, tb
+    print("update-dilbert: problem downloading strip for " + d, file=sys.stderr)
+   print(tb, file=sys.stderr)
    failed += [d]
   else:
    if verbose:
-    print "done!"
+    print("done!")
  if verbose and len(needed_dates) > 0 and not failed:
-  print "You're up to date now!"
+  print("You're up to date now!")
  if failed:
   if len(failed) == 1:
    if save_metadata and not save_strips:
-    print >> sys.stderr, "update-dilbert: there was a problem while downloading one strip's metadata:"
+    print("update-dilbert: there was a problem while downloading one strip's metadata:", file=sys.stderr)
    else:
-    print >> sys.stderr, "update-dilbert: there was a problem while downloading one strip:"
+    print("update-dilbert: there was a problem while downloading one strip:", file=sys.stderr)
   else:
    if save_metadata and not save_strips:
-    print >> sys.stderr, "update-dilbert: there were problems while downloading %s strips' metadata:" % str(len(failed))
+    print("update-dilbert: there were problems while downloading %s strips' metadata:" % str(len(failed)), file=sys.stderr)
    else:
-    print >> sys.stderr, "update-dilbert: there were problems while downloading %s strips:" % str(len(failed))
-  print >> sys.stderr, " " + ", ".join(failed)
+    print("update-dilbert: there were problems while downloading %s strips:" % str(len(failed)), file=sys.stderr)
+  print(" " + ", ".join(failed), file=sys.stderr)
  return errors
 
 

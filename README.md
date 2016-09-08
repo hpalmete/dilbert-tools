@@ -28,7 +28,8 @@ Disclaimer
 Installation
 ------------
 
-dilbert-tools requires Python 2.7 unless you are using the Windows EXEs.
+dilbert-tools requires Python 2.7 or later (including 3.x), unless you are
+using the Windows EXEs.
 
 To install dilbert-tools, you have several options:
 
@@ -64,7 +65,7 @@ To install the requirements on Ubuntu and other Debian-based distros:
     sudo apt-get install python python-lxml python-pillow python-yaml python-pip
     sudo pip install -U beautifulsoup4 requests
 
-To install the requirements on other platforms, with Python 2.7 and pip
+To install the requirements on other platforms, with Python 2.7 or later and pip
 already installed:
 
     pip install -U beautifulsoup4 lxml Pillow PyYAML requests

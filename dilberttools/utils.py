@@ -16,6 +16,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
+from __future__ import print_function
+
 import datetime
 import re
 import time
@@ -56,8 +58,8 @@ def firefox_version(today=None):
  epoch_version = 27
  today = today or datetime.date.today()
  days = (today - epoch_date).days
- weeks = days / 7
- cycles = weeks / 6
+ weeks = days // 7
+ cycles = weeks // 6
  return epoch_version + cycles
 
 

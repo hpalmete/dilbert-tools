@@ -16,7 +16,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
 
+from __future__ import print_function
+
 import argparse
+import io
 import json
 import logging
 import os
@@ -26,11 +29,6 @@ import time
 import traceback
 
 from collections import OrderedDict
-
-try:
- import cStringIO as StringIO
-except ImportError:
- import StringIO
 
 from PIL import Image
 
@@ -99,7 +97,7 @@ def main(argv=sys.argv, recurse=True):
   return exc.code
  
  if options.version:
-  print __version__
+  print(__version__)
   return 0
  
  output_dir = os.path.abspath(os.path.expanduser(os.path.expandvars(options.output_dir)))
@@ -135,14 +133,14 @@ def main(argv=sys.argv, recurse=True):
     dates += [d]
  
  if not len(dates):
-  print >> sys.stderr, p.format_help()
-  print >> sys.stderr, p.prog + ": error: no date/year argument given"
+  print(p.format_help(), file=sys.stderr)
+  print(p.prog + ": error: no date/year argument given", file=sys.stderr)
   return 2
  
  failed = []
  for d in dates:
   if verbose:
-   print "Fetching strip for " + d + "...",
+   print("Fetching strip for " + d + "...", end=' ')
    sys.stdout.flush()
   try:
    fetch_strip(d, output_dir, _newline_before_warnings=verbose)
@@ -151,19 +149,19 @@ def main(argv=sys.argv, recurse=True):
   except Exception:
    tb = traceback.format_exc()
    if verbose:
-    print "failed!"
-   print >> sys.stderr, error_msg + d
-   print >> sys.stderr, tb
+    print("failed!")
+   print(error_msg + d, file=sys.stderr)
+   print(tb, file=sys.stderr)
    failed += [d]
   else:
    if verbose:
-    print "done!"
+    print("done!")
  if failed:
   if len(failed) == 1:
-   print >> sys.stderr, "fetch-dilbert: there was a problem while downloading one strip:"
+   print("fetch-dilbert: there was a problem while downloading one strip:", file=sys.stderr)
   else:
-   print >> sys.stderr, "fetch-dilbert: there were problems while downloading %s strips:" % str(len(failed))
-  print >> sys.stderr, " " + ", ".join(failed)
+   print("fetch-dilbert: there were problems while downloading %s strips:" % str(len(failed)), file=sys.stderr)
+  print(" " + ", ".join(failed), file=sys.stderr)
 
 
 def fetch_strip(date, output_dir, save_strip=True, save_metadata=True,
@@ -175,7 +173,7 @@ def fetch_strip(date, output_dir, save_strip=True, save_metadata=True,
   if not any_warnings[0]:
    any_warnings[0] = True
    if _newline_before_warnings:
-    print >> sys.stderr
+    print(file=sys.stderr)
   logger.warning(message)
  
  image_data = None
@@ -240,7 +238,7 @@ def fetch_strip(date, output_dir, save_strip=True, save_metadata=True,
   os.utime(meta_file, (mtime, mtime))
  if save_strip:
   if strip:
-   image_stringio = StringIO.StringIO(image_data)
+   image_stringio = io.BytesIO(image_data)
    image_pillow = Image.open(image_stringio)
    image_pillow.save(output_file)
    image_stringio.close()

@@ -19,6 +19,8 @@
 # __init__.py file
 # (No shit, Sherlock.)
 
+from __future__ import print_function
+
 __author__  = "Scott Zeid <support+dilbert-tools@s.zeid.me>"
 
 from ._version import get_versions

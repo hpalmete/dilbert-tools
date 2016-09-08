@@ -39,7 +39,7 @@ dist/${version}/%-dilbert: ${src_files} ${other_prereqs}
 	sed -i -e 's/___PACKAGE___/${package}/g' "${main_py}"
 	sed -i -e 's/___MODULE___/$*/g' "${main_py}"
 	zip --junk-paths "${zip}" "${main_py}"
-	echo '#!/usr/bin/env python2' > "$@"
+	echo '#!/usr/bin/env python' > "$@"
 	cat "${zip}" >> "$@"
 	chmod a+x "$@"
 	rm -rf "${tmp_dir}"
