@@ -89,7 +89,7 @@ each alternate source tried.
 
 ### Usage
 
-Syntax:  `fetch-dilbert [options] [-o|--output|--output-dir <path>] <date/year> [...]`
+Syntax:  `fetch-dilbert [-h|--help] [-v|--verbose] [-o|--output|--output-dir <path>] <date/year> [...]`
 
 A date or range of dates must be given on the command line as positional
 arguments in one of the following formats:
@@ -118,9 +118,10 @@ positional arguments if you are still using the old ones.
  * `fetch-dilbert 2008-04-15 -o Comics/Dilbert/2008`  
    Downloads the strip from April 15, 2008, and saves it to the folder
    `Comics/Dilbert/2008` within the current directory.
- * `fetch-dilbert 1997 -o Comics/Dilbert/1997`  
-   Downloads the strips from the year 1997 and saves them to the folder
-   `Comics/Dilbert/1997` within the current directory.
+ * `fetch-dilbert 1997 -vo Comics/Dilbert/1997`  
+   Downloads the strips from the year 1997, outputs progress messages to
+   standard error, and saves them to the folder `Comics/Dilbert/1997` within
+   the current directory.
 
 
 `update-dilbert`
