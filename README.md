@@ -120,7 +120,7 @@ positional arguments if you are still using the old ones.
    Downloads today's strip, the one from June 23, 2008, and all strips from the
    year 1992 and saves them to the current working directory.
  * `fetch-dilbert 2008-04-15 -o Comics/Dilbert/2008`  
-   Downloads the strip from April 15, 2008, and saves it to the folder
+   Downloads the strip from April 15, 2008 and saves it to the folder
    `Comics/Dilbert/2008` within the current directory.
  * `fetch-dilbert 1997 -vo Comics/Dilbert/1997`  
    Downloads the strips from the year 1997, outputs progress messages to
