@@ -107,7 +107,7 @@ def update_collection(path, verbose, save_strips=True, save_metadata=True):
     print "Need to get %s strips' metadata." % str(len(needed_dates))
    else:
     print "Need to get %s strips." % str(len(needed_dates))
- failed = 0
+ failed = []
  for d in needed_dates:
   if verbose:
    if save_metadata and not save_strips:
@@ -130,22 +130,24 @@ def update_collection(path, verbose, save_strips=True, save_metadata=True):
    else:
     print >> sys.stderr, "update-dilbert: problem downloading strip for " + d
    print >> sys.stderr, tb
-   failed = failed + 1
+   failed += [d]
   else:
    if verbose:
     print "done!"
  if verbose and len(needed_dates) > 0 and not failed:
   print "You're up to date now!"
- if failed == 1:
-  if save_metadata and not save_strips:
-   print >> sys.stderr, "update-dilbert: there was a problem while downloading one strip's metadata."
+ if failed:
+  if len(failed) == 1:
+   if save_metadata and not save_strips:
+    print >> sys.stderr, "update-dilbert: there was a problem while downloading one strip's metadata:"
+   else:
+    print >> sys.stderr, "update-dilbert: there was a problem while downloading one strip:"
   else:
-   print >> sys.stderr, "update-dilbert: there was a problem while downloading one strip."
- elif failed > 1:
-  if save_metadata and not save_strips:
-   print >> sys.stderr, "update-dilbert: there were problems while downloading %s strips' metadata." % str(failed)
-  else:
-   print >> sys.stderr, "update-dilbert: there were problems while downloading %s strips." % str(failed)
+   if save_metadata and not save_strips:
+    print >> sys.stderr, "update-dilbert: there were problems while downloading %s strips' metadata:" % str(len(failed))
+   else:
+    print >> sys.stderr, "update-dilbert: there were problems while downloading %s strips:" % str(len(failed))
+  print >> sys.stderr, " " + ", ".join(failed)
  return errors
 
 

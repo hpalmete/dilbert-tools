@@ -138,7 +138,7 @@ def main(argv=sys.argv, recurse=True):
   print >> sys.stderr, p.prog + ": error: no date/year argument given"
   return 2
  
- failed = 0
+ failed = []
  for d in dates:
   if verbose:
    print "Fetching strip for " + d + "...",
@@ -153,14 +153,16 @@ def main(argv=sys.argv, recurse=True):
     print "failed!"
    print >> sys.stderr, error_msg + d
    print >> sys.stderr, tb
-   failed = failed + 1
+   failed += [d]
   else:
    if verbose:
     print "done!"
- if failed == 1:
-  print >> sys.stderr, "fetch-dilbert: there was a problem while downloading one strip."
- elif failed > 1:
-  print >> sys.stderr, "fetch-dilbert: there were problems while downloading %s strips." % str(failed)
+ if failed:
+  if len(failed) == 1:
+   print >> sys.stderr, "fetch-dilbert: there was a problem while downloading one strip:"
+  else:
+   print >> sys.stderr, "fetch-dilbert: there were problems while downloading %s strips:" % str(len(failed))
+  print >> sys.stderr, " " + ", ".join(failed)
 
 
 def fetch_strip(date, output_dir, save_strip=True, save_metadata=True,
