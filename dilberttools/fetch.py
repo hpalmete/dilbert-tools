@@ -120,18 +120,19 @@ def main(argv=sys.argv, recurse=True):
     date_args += [getattr(options, arg)]
  
  dates = []
- for d in date_args:
-  if is_year(d):
-   current_year = time.strftime("%Y")
-   if d == current_year:
-    year_list = generate_year_list(d, "%Y-%m-%d", True)
+ for i in date_args:
+  for d in i.replace(",", " ").strip(" ").split(" "):
+   if is_year(d):
+    current_year = time.strftime("%Y")
+    if d == current_year:
+     year_list = generate_year_list(d, "%Y-%m-%d", True)
+    else:
+     year_list = generate_year_list(d, "%Y-%m-%d")
+    dates += year_list
+   elif d == "today":
+    dates += [time.strftime("%Y-%m-%d")]
    else:
-    year_list = generate_year_list(d, "%Y-%m-%d")
-   dates += year_list
-  elif d == "today":
-   dates += [time.strftime("%Y-%m-%d")]
-  else:
-   dates += [d]
+    dates += [d]
  
  if not len(dates):
   print >> sys.stderr, p.format_help()

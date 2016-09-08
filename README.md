@@ -101,6 +101,9 @@ arguments in one of the following formats:
  * YYYY  
    Download the strip from the given year.
 
+Date/year arguments may be separated with spaces, commas, or both, and
+extraneous spaces and commas will be ignored.
+
 The `-o/--output/--output-dir` argument is optional, and it is the folder where
 you want the strip(s) to be saved.  It defaults to saving in the current
 directory.
