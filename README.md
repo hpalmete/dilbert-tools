@@ -1,7 +1,7 @@
 Dilbert Tools  
 =============
 
-Copyright (c) 2008-2016 Scott Zeid  
+Copyright (c) 2008-2017 Scott Zeid  
 [https://code.s.zeid.me/dilbert-tools](https://code.s.zeid.me/dilbert-tools)  
 
 Download Dilbert strips and maintain a private Dilbert collection.
@@ -170,19 +170,16 @@ file will be created only if EXE files for both scripts exist in
 ### Making Windows EXEs
 
 The official EXEs are created using `make exes`, which uses [`ezpyi`][ezpyi],
-which is a wrapper for [PyInstaller][PyInstaller].  Except in Cygwin and MSYS,
-`make exes` uses [Wine][Wine] via [this `ezpyi-wine` script][ezpyi-wine].
+which is a wrapper for [PyInstaller][PyInstaller].  Except in Windows Subsystem
+for Linux, Cygwin, and MSYS, `make exes` uses [Wine][Wine] via [this
+`ezpyi-wine` script][ezpyi-wine].
 
-[ezpyi]: https://code.s.zeid.me/bin/blob/master/ezpyi
+[ezpyi]: https://pypi.python.org/pypi/ezpyi
 [PyInstaller]: http://www.pyinstaller.org/
 [Wine]: https://www.winehq.org/
 [ezpyi-wine]: https://code.s.zeid.me/bin/blob/master/ezpyi-wine
 
-Note:  Windows Subsystem for Linux cannot be used to build Windows EXEs until
-Microsoft add support for 32-bit ELF executables.  If that happens, then use
-the steps for `ezpyi-wine` on Unix-like platforms.
-
-On Unix-like platforms (except Cygwin and MSYS):
+On Unix-like platforms (except WSL, Cygwin, and MSYS):
 
 1. Install Wine.
 
@@ -190,17 +187,45 @@ On Unix-like platforms (except Cygwin and MSYS):
    your `$PATH`.
 
 3. Set up the environment and install the runtime dependencies into it:  
-   `ezpyi-wine : pip -U install beautifulsoup4 lxml Pillow PyYAML requests`
+   `ezpyi-wine : pip install -U beautifulsoup4 lxml Pillow PyYAML requests`
 
 4. Run `make exes`, or if necessary, `make exes EZPYI_WINE=<path to ezpyi-wine>`.
 
 
+On Windows Subsystem for Linux:
+
+1. Install Python inside the Windows environment.
+
+2. In Windows, set the `PYTHONIOENCODING` environment variable to `UTF-8`:
+   
+    a. Run `sysdm.cpl`.
+    
+    b. Go to Advanced → Environment Variables.
+    
+    c. Under System variables (or User variables if necessary), click New.
+    
+    d. Set the name to `PYTHONIOENCODING` and the value to `UTF-8`.
+    
+    e. Click OK → OK → OK.
+    
+    f. Restart the WSL environment if it is already running.
+
+3. In Windows, install `ezpyi`:  `pip install -U ezpyi`
+
+4. In Windows, install the runtime dependencies:  
+   `pip install -U beautifulsoup4 lxml Pillow PyYAML requests`
+
+5. Make sure the dilbert-tools Git repository is located in a Windows path
+   (e.g. `/mnt/c/...`).
+
+6. In WSL, run `make exes`, or if necessary, `make exes EZPYI=<path to ezpyi>`.
+
+
 On Cygwin or MSYS:
 
-1. [Download `ezpyi`][ezpyi], and preferably put it somewhere on your
-   Windows `%PATH%`.
+1. In Windows, install `ezpyi`:  `pip install -U ezpyi`
 
-2. Outside of Cygwin/MSYS, install [PyInstaller][PyInstaller] and the runtime
-   dependencies.
+2. In Windows, install the runtime dependencies:  
+   `pip install -U beautifulsoup4 lxml Pillow PyYAML requests`
 
 3. Run `make exes`, or if necessary, `make exes EZPYI=<path to ezpyi>`.

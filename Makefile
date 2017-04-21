@@ -18,7 +18,7 @@ EZPYI_WINE := ezpyi-wine
 all: scripts
 .PHONY: scripts exes dist sdist zips prep clean
 
-define prep =
+define prep
  mkdir -p "dist/${version}"
  ln -sfn "${version}" "dist/latest"
 endef
@@ -47,15 +47,36 @@ dist/${version}/%-dilbert: ${src_files} ${other_prereqs}
 exes: dist/${version}/fetch-dilbert.exe \
       dist/${version}/update-dilbert.exe
 
-ifeq "$(shell uname -s | grep -i -e '^\(CYGWIN\|MSYS\)_.*$$')" ""
- EZPYI := ${EZPYI_WINE}
- ezpyi_url = https://code.s.zeid.me/bin/raw/master/ezpyi-wine
+ifneq "$(shell uname -v | grep -e 'Microsoft')" ""
+ # Windows Subsystem for Linux
+ ifeq "$(shell pwd | head -n 1 | grep -e '^/mnt/[a-zA-Z]/')" ""
+  define not_drvfs_warning
+	 echo "warning: it does not look like you are running from within" \
+	      "a DrvFs path (i.e. a Windows drive or UNC path).  Making" \
+	      "EXEs will probably fail." >&2
+  endef
+ else
+  define not_drvfs_warning
+	true
+  endef
+ endif
+ EZPYI := ezpyi.exe
+ ezpyi_url = https://pypi.python.org/pypi/ezpyi
 else
- ezpyi_url = https://code.s.zeid.me/bin/raw/master/ezpyi
+ define not_drvfs_warning
+	true
+ endef
+ ifeq "$(shell uname -s | grep -i -e '^\(CYGWIN\|MSYS\)_.*$$')" ""
+  EZPYI := ${EZPYI_WINE}
+  ezpyi_url = https://code.s.zeid.me/bin/raw/master/ezpyi-wine
+ else
+  ezpyi_url = https://pypi.python.org/pypi/ezpyi
+ endif
 endif
 
 dist/${version}/%-dilbert.exe: dist/${version}/%-dilbert
 	# <${ezpyi_url}>
+	@$(not_drvfs_warning)
 	${EZPYI} "$<" "$@" -V "${version}"
 
 dist: sdist zips
@@ -83,13 +104,13 @@ else
 endif
 
 ifneq "$(filter dist,$(MAKECMDGOALS))" ""
- define no_windows_warning =
+ define no_windows_warning
 	[ x"${do_windows}" != x"0" ] && true || \
 	echo 'warning: not creating Windows zip file because not all EXEs' \
 	     'exist in' "dist/${version}" >&2
  endef
 else
- define no_windows_warning =
+ define no_windows_warning
 	true
  endef
 endif

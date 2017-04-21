@@ -1,5 +1,5 @@
 Dilbert Tools
-Copyright (c) 2008-2016 Scott Zeid
+Copyright (c) 2008-2017 Scott Zeid
 https://code.s.zeid.me/dilbert-tools
 
 This program is free software; you can redistribute it and/or modify
